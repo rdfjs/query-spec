@@ -166,6 +166,66 @@
       If it returns <code>false</code>, <code>quads()</code> MUST return a stream emitting an error, and <code>metadata()</code> MUST reject.
     </p>
   </section>
+  
+  <section data-dfn-for="QueryResultMetadata">
+    <h3><dfn>QueryResultMetadata</dfn> interface</h3>
+
+    <pre class="idl">
+    interface QueryResultMetadata {
+      attribute QueryResultMetadataCount? count;
+    };
+    </pre>
+    
+    <p>
+      A <code>QueryResultMetadata</code> is an object that represents contains metadata bout a certain query result,
+      such as invoking <code>FilterableSource.matchExpression</code>.
+    </p>
+    <p>
+      <dfn>count</dfn> is an optional field that contains metadata about the number of quads in the result stream.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryResultMetadataCount">
+    <h3><dfn>QueryResultMetadataCount</dfn> interface</h3>
+
+    <pre class="idl">
+    interface QueryResultMetadataCount {
+      attribute string type;
+      attribute number value;
+    };
+    </pre>
+    
+    <p>
+      <code>QueryResultMetadataCount</code> is part of the <code>QueryResultMetadata</code> interface
+      to represent metadata about the number of quads in the result stream.
+    </p>
+    <p>
+      <dfn>type</dfn> indicates the type of counting that was done, and MUST either be <code>"estimate"</code> or <code>"exact"</code>.
+    </p>
+    <p>
+      <dfn>value</dfn> indicates an estimate of the number of quads in the stream if <code>type = "estimate"</code>,
+      or the exact number  of quads in the stream if <code>type = "exact"</code>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryResultMetadata">
+    <h3><dfn>QueryResultMetadataOptions</dfn> interface</h3>
+
+    <pre class="idl">
+    interface QueryResultMetadataOptions {
+      attribute string? count;
+    };
+    </pre>
+    
+    <p>
+      A <code>QueryResultMetadataOptions</code> is an object that gives suggestions on what type of metadata is desired,
+      such as when invoking <code>FilterResult.metadata</code>.
+    </p>
+    <p>
+      <dfn>count</dfn> is an optional field that MAY either contain <code>"estimate"</code> or <code>"exact"</code>.
+      If defined, this type MUST correspond to the type in <code>QueryResultMetadataCount</code>.
+    </p>
+  </section>
 
 </section>
 
