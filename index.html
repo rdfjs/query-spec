@@ -55,8 +55,8 @@
   <h2>Abstract</h2>
   <p>
     The scope of this specification is to provide a way to query over quads, as defined in the <a href="http://rdf.js.org/data-model-spec/#quad-interface">RDF/JS: Data model specification</a>.
-    Similar to the <a href="http://rdf.js.org/data-model-spec/">RDF/JS: Data model specification</a>, this is a low-level specification that provides only essential methods for working with query engines.
-    High-level interfaces that work with quads can and should be using libraries that implement this interface.
+    Similar to the <a href="http://rdf.js.org/data-model-spec/">RDF/JS: Data model specification</a>, this is a low-level specification that provides only essential methods for working across query engine component.
+    High-level querying interfaces can and should be using libraries that implement this interface.
   </p>
   <p>The specification itself consists of a core-part that is the base for all other functions defined.</p>
   <p>Low-level methods are using explicit parameters that cannot be omitted.</p>
@@ -83,6 +83,22 @@
     <li>Interfaces do not conflict with other RDF/JS interfaces, and users and implementers of purely other RDF/JS interfaces should not be aware of the interfaces in this specification if they are not needed.</li>
     <li>Data interfaces should not contain methods, as to enable straightforward transmission over low-level communication protocols such as Web Assembly.</li>
   </ul>
+</section>
+
+<section>
+  <h2>Filter expression interfaces</h2>
+  
+  This section introduces interfaces that enable quad sources to be filtered based on a declarative expression.
+  
+  <section>
+    <h2>Goals</h2>
+    <ul>
+      <li>Query engines MUST be able to push down filters into sources.</li>
+      <li>Query engines MUST be able to detect what expressions are supported by sources.</li>
+      <li>Query engines MUST be able to obtain the estimated cardinality of any supported expression.</li>
+    </ul>
+  </section>
+
 </section>
 
 </body>
