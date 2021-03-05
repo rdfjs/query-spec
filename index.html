@@ -82,6 +82,7 @@
     <li><em>All <a href="http://rdf.js.org/data-model-spec/#design-elements-and-principles">design elements and principles from the RDF/JS data model specification</a> apply here as well.</em></li>
     <li>Interfaces do not conflict with other RDF/JS interfaces, and users and implementers of purely other RDF/JS interfaces should not be aware of the interfaces in this specification if they are not needed.</li>
     <li>Data interfaces should not contain methods, as to enable straightforward transmission over low-level communication protocols such as Web Assembly.</li>
+    <li>To enable querying over large graphs, interfaces should handle quads in a streaming manner, such as the <a href="https://rdf.js.org/stream-spec/">RDF/JS stream interfaces</a>.</li>
   </ul>
 </section>
 
@@ -97,6 +98,45 @@
       <li>Query engines MUST be able to detect what expressions are supported by sources.</li>
       <li>Query engines MUST be able to obtain the estimated cardinality of any supported expression.</li>
     </ul>
+  </section>
+
+  <section data-dfn-for="FilterableSource">
+    <h3><dfn>FilterableSource</dfn> interface</h3>
+
+    <pre class="idl">
+    interface FilterableSource {
+      FilterableSourceResult matchExpression (
+        optional Term? subject,
+        optional Term? predicate,
+        optional Term? obj,
+        optional Term? graph,
+        optional Expression? expression
+      );
+    };
+    </pre>
+    
+    <p>
+      A <code>FilterableSource</code> is an object that produces a <code>FilterableSourceResult</code> that can emit quads.
+      The emitted quads can be directly contained in this <code>FilterableSource</code> object, or they can be generated on the fly.
+    </p>
+    <p>
+      <code>FilterableSource</code> is not necessarily an extension of the <a href="https://rdf.js.org/stream-spec/#source-interface">RDF/JS Source interface</a>, but implementers MAY decide to implement both at the same time.
+    </p>
+    <p>
+      <dfn>matchExpression()</dfn> Returns a <code>FilterableSourceResult</code> that contains a quad stream that processes all quads matching the quad pattern and the expression.
+    </p>
+    <p>
+      When a <code>Term</code> parameter is defined, it must match each produced quad, according to the <a href="http://rdf.js.org/data-model-spec/#quad-interface"><code>Quad.equals</code></a> semantics. When it is undefined, it acts as a wildcard, and can match with any <code>Term</code>.
+    </p>
+    <p class="note">
+      When matching with <code>graph</code> set to <code>undefined</code> or <code>null</code>
+      it MUST match all the graphs (sometimes called <em>the union graph</em>). To match only <em>the default graph</em>
+      set <code>graph</code> to a <code>DefaultGraph</code>
+    </p>
+    <p>
+      When an <code>Expression</code> parameter is defined, the complete quad stream is filtered according to this expression.
+      When it is undefined, no filter is applied, and the semantics are identical to that of <a href="https://rdf.js.org/stream-spec/#source-interface">Source.match</a>.
+    </p>
   </section>
 
 </section>
