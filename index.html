@@ -126,7 +126,10 @@
       <dfn>matchExpression()</dfn> Returns a <code>FilterableSourceResult</code> that contains a quad stream that processes all quads matching the quad pattern and the expression.
     </p>
     <p>
-      When a <code>Term</code> parameter is defined, it must match each produced quad, according to the <a href="http://rdf.js.org/data-model-spec/#quad-interface"><code>Quad.equals</code></a> semantics. When it is undefined, it acts as a wildcard, and can match with any <code>Term</code>.
+      When a <code>Term</code> parameter is defined, and is a <code>NamedNode</code>, <code>Literal</code> or <code>BlankNode</code>,
+      it must match each produced quad, according to the <a href="http://rdf.js.org/data-model-spec/#quad-interface"><code>Quad.equals</code></a> semantics.
+      When a <code>Term</code> parameter is a <code>Variable</code>,
+      or it is undefined, it acts as a wildcard, and can match with any <code>Term</code>.
     </p>
     <p class="note">
       When matching with <code>graph</code> set to <code>undefined</code> or <code>null</code>
@@ -135,7 +138,16 @@
     </p>
     <p>
       When an <code>Expression</code> parameter is defined, the complete quad stream is filtered according to this expression.
-      When it is undefined, no filter is applied, and the semantics are identical to that of <a href="https://rdf.js.org/stream-spec/#source-interface">Source.match</a>.
+      When it is undefined, no filter is applied.
+    </p>
+    <p>
+      If parameters of type <code>Variable</code> with an equal variable name are in place,
+      then the corresponding quad components in the resulting quad stream MUST be equal.
+    </p>
+    <p>
+      <code>Expression</code>'s MAY contain <code>Variable</code> <code>Term</code>'s.
+      If their variable names are equal to <code>Variable</code>'s in the given quad pattern,
+      then the <code>Expression</code> MUST be instantiated for each variable's binding in the resulting quad stream when applying the <code>Expression</code> filter.
     </p>
   </section>
   
@@ -264,7 +276,7 @@
     </p>
     <p>
       <dfn>operator</dfn> contains a value that identifies an operator.
-      Possible values can be found in TODO.
+      Possible values can be found in <a href="#expression-operators">the list of operators</a>.
     </p>
     <p>
       <dfn>args</dfn> contains an array of <code>Expression</code>'s on to which the given operator applies.
@@ -293,6 +305,21 @@
     </p>
   </section>
 
+</section>
+
+<section>
+  <h2>Expression operators</h2>
+
+  This section introduces a non-exhaustive list of operators that MAY be used in <code>OperatorExpression</code>.
+
+  Implementers MAY decide to support only a subset of these operators.
+  
+
+  <div class="warning" title="TODO">
+    <p>
+      Add tables
+    </p>
+  </div>
 </section>
 
 </body>
