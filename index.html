@@ -105,7 +105,7 @@
 
     <pre class="idl">
     interface FilterableSource {
-      FilterableSourceResult matchExpression (
+      FilterResult matchExpression (
         optional Term? subject,
         optional Term? predicate,
         optional Term? obj,
@@ -136,6 +136,34 @@
     <p>
       When an <code>Expression</code> parameter is defined, the complete quad stream is filtered according to this expression.
       When it is undefined, no filter is applied, and the semantics are identical to that of <a href="https://rdf.js.org/stream-spec/#source-interface">Source.match</a>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="FilterResult">
+    <h3><dfn>FilterResult</dfn> interface</h3>
+
+    <pre class="idl">
+    interface FilterResult {
+      Stream quads();
+      Promise&lt;QueryResultMetadata&gt; metadata(optional QueryResultMetadataOptions? options);
+      Promise&lt;boolean&gt; isSupported();
+    };
+    </pre>
+    
+    <p>
+      A <code>FilterResult</code> is an object that represents the result of a filter expression of <code>FilterableSource</code> for a given quad pattern and expression.
+      It MAY create results lazily after one of its methods is invoked.
+    </p>
+    <p>
+      <dfn>quads()</dfn> Returns a <a href="https://rdf.js.org/stream-spec/#stream-interface"><code>Stream<Quad></code></a> containing all the quads that matched the given quad pattern and expression.
+    </p>
+    <p>
+      <dfn>metadata()</dfn> Asynchronously returns a <code>QueryResultMetadata</code>, that contains the metadata of the current result.
+    </p>
+    <p>
+      <dfn>isSupported()</dfn> Asynchronously returns a boolean indicating if the requested expression is supported by the <code>FilterableSource</code>.
+      If it returns <code>true</code>, <code>quads()</code> and <code>metadata()</code> MAY produce a valid result.
+      If it returns <code>false</code>, <code>quads()</code> MUST return a stream emitting an error, and <code>metadata()</code> MUST reject.
     </p>
   </section>
 
