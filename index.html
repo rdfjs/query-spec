@@ -226,6 +226,72 @@
       If defined, this type MUST correspond to the type in <code>QueryResultMetadataCount</code>.
     </p>
   </section>
+  
+  <section data-dfn-for="Expression">
+    <h3><dfn>Expression</dfn> interface</h3>
+
+    <pre class="idl">
+    interface Expression {
+      attribute string expressionType;
+    };
+    </pre>
+    
+    <p>
+      <code>QueryResultMetadataOptions</code> is an abstract interface that represents a generic expression over a stream of quads.
+    </p>
+    <p>
+      <dfn>expressionType</dfn> contains a value that identifies the concrete interface of the expression, since the Expression itself is not directly instantiated.
+      Possible values include <code>"operator"</code> and <code>"term"</code>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="OperatorExpression">
+    <h3><dfn>OperatorExpression</dfn> interface</h3>
+
+    <pre class="idl">
+    interface OperatorExpression {
+      attribute string expressionType;
+      attribute string operator;
+      attribute FrozenArray&lt;Expression&gt; args;
+    };
+    </pre>
+    
+    <p>
+      An <code>OperatorExpression</code> is represents an expression that applies a given operator on given sub-expressions.
+    </p>
+    <p>
+      <dfn>expressionType</dfn> contains the constant <code>"operator"</code>.
+    </p>
+    <p>
+      <dfn>operator</dfn> contains a value that identifies an operator.
+      Possible values can be found in TODO.
+    </p>
+    <p>
+      <dfn>args</dfn> contains an array of <code>Expression</code>'s on to which the given operator applies.
+      The length of this array depends on the operator.
+    </p>
+  </section>
+  
+  <section data-dfn-for="TermExpression">
+    <h3><dfn>TermExpression</dfn> interface</h3>
+
+    <pre class="idl">
+    interface TermExpression {
+      attribute string expressionType;
+      attribute Term term;
+    };
+    </pre>
+    
+    <p>
+      A <code>TermExpression</code> is an expression that contains a <a href="http://rdf.js.org/data-model-spec/#term-interface"><code>Term</code></a>.
+    </p>
+    <p>
+      <dfn>expressionType</dfn> contains the constant <code>"term"</code>.
+    </p>
+    <p>
+      <dfn>term</dfn> contains a <a href="http://rdf.js.org/data-model-spec/#term-interface"><code>Term</code></a>.
+    </p>
+  </section>
 
 </section>
 
