@@ -304,6 +304,27 @@
       <dfn>term</dfn> contains a <a href="http://rdf.js.org/data-model-spec/#term-interface"><code>Term</code></a>.
     </p>
   </section>
+  
+  <section data-dfn-for="ExpressionFactory">
+    <h3><dfn>ExpressionFactory</dfn> interface</h3>
+
+    <pre class="idl">
+    interface ExpressionFactory {
+      OperatorExpression operatorExpression(string operator, sequence&lt;Expression&gt; args);
+      TermExpression termExpression(Term term);
+    };
+    </pre>
+    
+    <p>
+      <code>ExpressionFactory</code> enables expressions to be created in an idiomatic manner.
+    </p>
+    <p>
+      <dfn>operatorExpression</dfn> creates a new <code>OperatorExpression</code> instance for the given operator and array of arguments.
+    </p>
+    <p>
+      <dfn>termExpression</dfn> creates a new <code>TermExpression</code> instance for the given term.
+    </p>
+  </section>
 
 </section>
 
