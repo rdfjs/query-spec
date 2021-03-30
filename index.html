@@ -331,16 +331,494 @@
 <section>
   <h2>Expression operators</h2>
 
-  This section introduces a non-exhaustive list of operators that MAY be used in <code>OperatorExpression</code>.
+  <p>This section introduces a non-exhaustive list of operators that MAY be used in <code>OperatorExpression</code>.</p>
 
-  Implementers MAY decide to support only a subset of these operators.
+  <p>Implementers MAY decide to support only a subset of these operators.</p>
   
-
-  <div class="warning" title="TODO">
-    <p>
-      Add tables
-    </p>
-  </div>
+  <p>We omit any formal semantics behind these operators in this specification, and refer to their <a href="https://www.w3.org/TR/sparql11-query/">SPARQL 1.1. semantics</a>.</p>
+  
+  <section>
+    <h2>Relational operators</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#OperatorMapping">relational operators</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>!</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:boolean)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>The inverse of the given boolean value.</td>
+        </tr>
+        <tr>
+          <td><code>uplus</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The positive value of the given numeric value.</td>
+        </tr>
+        <tr>
+          <td><code>uminus</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The negative value of the given numeric value.</td>
+        </tr>
+        <tr>
+          <td><code>*</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The multiplication of the given values.</td>
+        </tr>
+        <tr>
+          <td><code>/</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The division of the given values.</td>
+        </tr>
+        <tr>
+          <td><code>+</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The addition of the given values.</td>
+        </tr>
+        <tr>
+          <td><code>-</code></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>The subtraction of the given values.</td>
+        </tr>
+        <tr>
+          <td><code>=</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the given values are equal. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+        <tr>
+          <td><code>!=</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the given values are not equal. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+        <tr>
+          <td><code>&lt;</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the first value is lesser than the second value. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+        <tr>
+          <td><code>&gt;</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the first value is greater than the second value. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+        <tr>
+          <td><code>&le;</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the first value is lesser than or equal to the second value. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+        <tr>
+          <td><code>&ge;</code></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the first value is greater than or equal to the second value. If the terms are <code>Literal</code>s, their lexical value is compared</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <section>
+    <h2>Term operators</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-rdfTerms">operators on RDF terms</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-isIRI"><code>isiri</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if term is a <code>NamedNode</code>. Returns false otherwise.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-isBlank"><code>isblank</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if term is a <code>BlankNode</code>. Returns false otherwise.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-isLiteral"><code>isliteral</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if term is a <code>Literal</code>. Returns false otherwise.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-isNumeric"><code>isnumeric</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if term is a <code>Literal</code> with a numeric datatype. Returns false otherwise.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-str"><code>str</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the (lexical) string representation of the given term.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-lang"><code>lang</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the language tag of the given <code>Literal</code>, or the empty string if the <code>Literal</code> has no language tag.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-datatype"><code>datatype</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code></li>
+            </ol>
+          </td>
+          <td><code>NamedNode</code></td>
+          <td>Returns the datatype of the given <code>Literal</code>.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-iri"><code>iri</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code> (xsd:string), <code>NamedNode</code></li>
+            </ol>
+          </td>
+          <td><code>NamedNode</code></td>
+          <td>Resolve the given IRI against the base IRI of the current context.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-bnode"><code>bnode</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code> (xsd:string), <em>empty</em></li>
+            </ol>
+          </td>
+          <td><code>BlankNode</code></td>
+          <td>Create a new blank node with the given label if provided.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strdt"><code>strdt</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code> (xsd:string)</li>
+              <li><code>NamedNode</code></li>
+            </ol>
+          </td>
+          <td><code>Literal</code></td>
+          <td>Returns a new <code>Literal</code> with the given datatype.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strlang"><code>strlang</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal</code> (xsd:string)</li>
+              <li><code>Literal</code> (xsd:string)</li>
+            </ol>
+          </td>
+          <td><code>Literal</code></td>
+          <td>Returns a new <code>Literal</code> with the given language tag.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-uuid"><code>uuid</code></a></td>
+          <td>/</td>
+          <td><code>NamedNode</code></td>
+          <td>Returns a new <code>NamedNode</code> following the <a href="https://www.ietf.org/rfc/rfc4122.txt">UUID URN scheme</a>.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-struuid"><code>struuid</code></a></td>
+          <td>/</td>
+          <td><code>Literal</code> (xsd:string)</td>
+          <td>Returns a new <code>Literal</code> following the <a href="https://www.ietf.org/rfc/rfc4122.txt">UUID URN scheme</a>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <section>
+    <h2>String operators</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-strings">string operators</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strlen"><code>strlen</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the number of characters of the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-substr"><code>substr</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:integer)</code></li>
+              <li><code>Literal (xsd:integer)</code> (optional)</li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the substring of the given string starting from the given position (second parameter) with the given length (third parameter). If no third parameter is provided, then the maximum length is taken.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-ucase"><code>ucase</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Transform each character in the given string to upper case.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-lcase"><code>lcase</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Transform each character in the given string to lower case.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strstarts"><code>strstarts</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Check if the given string starts with the given second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strends"><code>strends</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Check if the given string ends with the given second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strcontains"><code>strcontains</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Check if the given string contains the given second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strbefore"><code>strbefore</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>From the given first string, find the full string that occurs before the given second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-strafter"><code>strafter</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>From the given first string, find the full string that occurs after the given second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-encode"><code>encode_for_uri</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Apply URI encoding on the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-concat"><code>concat</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li> (variable number of arguments)
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Concatenation of all the given strings.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-langMatches"><code>langmatches</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>If the language tag of the first literal matches the second string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-regex"><code>regex</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code> (optional)</li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Check if on the given first string, the given second regular expression matches. The third parameter indicates optional regex flags.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-replace"><code>replace</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code></li>
+              <li><code>Literal (xsd:string)</code> (optional)</li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>In the given first string, match the given second regular expression, and replace it with the given third string. The fourth parameter indicates optional regex flags.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <section>
+    <h2>Functional forms</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-forms">functional operators</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-bound"><code>bound</code></a></td>
+          <td>
+            <ol>
+              <li><code>Variable</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if the given variable is bound to a value. Returns false otherwise.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </section>
 
 </body>
