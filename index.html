@@ -492,9 +492,9 @@
   </section>
   
   <section>
-    <h2>Term operators</h2>
+    <h2>Term functions</h2>
     
-    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-rdfTerms">operators on RDF terms</a>.
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-rdfTerms">functions on RDF terms</a>.
   
     <table>
       <thead>
@@ -630,9 +630,9 @@
   </section>
   
   <section>
-    <h2>String operators</h2>
+    <h2>String functions</h2>
     
-    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-strings">string operators</a>.
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-strings">string functions</a>.
   
     <table>
       <thead>
@@ -797,6 +797,328 @@
   </section>
   
   <section>
+    <h2>Numerical functions</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-numerics">numerical functions</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-abs"><code>abs</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>Returns the absolute value of the given numerical term.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-round"><code>round</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>Returns the number with no fractional part that is closest to the argument, with preference for rounding up.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-ceil"><code>ceil</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>Returns the smallest (closest to negative infinity) number with no fractional part that is not less than the value of arg.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-floor"><code>floor</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (numeric)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (numeric)</code></td>
+          <td>Returns the largest (closest to positive infinity) number with no fractional part that is not greater than the value of arg.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-rand"><code>rand</code></a></td>
+          <td>
+            /
+          </td>
+          <td><code>Literal (xsd:double)</code></td>
+          <td>Returns a pseudo-random, number between 0 (inclusive) and 1.0e0 (exclusive). Different numbers can be produced every time this function is invoked. Numbers should be produced with approximately equal probability.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Date and time functions</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-date-time">date and time functions</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-now"><code>now</code></a></td>
+          <td>
+            /
+          </td>
+          <td><code>Literal (xsd:dateTime)</code></td>
+          <td>Returns an XSD dateTime value for the current query execution. All calls to this function in any one query execution must return the same value.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-year"><code>year</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the year of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-month"><code>month</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the month of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-day"><code>day</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the day of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-hours"><code>hours</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the hours of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-minutes"><code>minutes</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the minutes of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-seconds"><code>seconds</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Returns the seconds of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-timezone"><code>timezone</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:dayTimeDuration)</code></td>
+          <td>Returns the timezone part of the given date.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-tz"><code>tz</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:dateTime)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the timezone part of the given date.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Hash functions</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-hash">hash functions</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-md5"><code>md5</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the MD5 checksum of the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-sha1"><code>sha1</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the SHA1 checksum of the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-sha256"><code>sha256</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the SHA256 checksum of the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-sha384"><code>sha384</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the SHA384 checksum of the given string.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-sha512"><code>sha512</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:string)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Returns the SHA512 checksum of the given string.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>XPath constructor functions</h2>
+    
+    This section introduces <a href="https://www.w3.org/TR/sparql11-query/#FunctionMapping">XPath constructor functions</a>.
+  
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Input</th><th>Output</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#string</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:string)</code></td>
+          <td>Cast the given term to <code>xsd:string</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#float</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:float)</code></td>
+          <td>Cast the given term to <code>xsd:float</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#double</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:double)</code></td>
+          <td>Cast the given term to <code>xsd:double</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#decimal</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:decimal)</code></td>
+          <td>Cast the given term to <code>xsd:decimal</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#integer</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:integer)</code></td>
+          <td>Cast the given term to <code>xsd:integer</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#dateTime</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:dateTime)</code></td>
+          <td>Cast the given term to <code>xsd:dateTime</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#date</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:date)</code></td>
+          <td>Cast the given term to <code>xsd:date</code></td>
+        </tr>
+        <tr>
+          <td><code>http://www.w3.org/2001/XMLSchema#boolean</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Cast the given term to <code>xsd:boolean</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <section>
     <h2>Functional forms</h2>
     
     This section introduces <a href="https://www.w3.org/TR/sparql11-query/#func-forms">functional operators</a>.
@@ -815,6 +1137,94 @@
           </td>
           <td><code>Literal (xsd:boolean)</code></td>
           <td>Returns true if the given variable is bound to a value. Returns false otherwise.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-if"><code>if</code></a></td>
+          <td>
+            <ol>
+              <li><code>Expression</code></li>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Term</code></td>
+          <td>Evaluates the expression as <a href="https://www.w3.org/TR/sparql11-query/#ebv">effective boolean value</a>. Returns the second argument if true, otherwise the third argument.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-coalesce"><code>coalesce</code></a></td>
+          <td>
+            <ol>
+              <li><code>Expression</code> (variable number of arguments)</li>
+            </ol>
+          </td>
+          <td><code>Term</code></td>
+          <td>Returns the first expression result that evaluates without an error.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-logical-or"><code>||</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:boolean)</code></li>
+              <li><code>Literal (xsd:boolean)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns a logical OR of left and right. Note that logical-or operates on the <a href="https://www.w3.org/TR/sparql11-query/#ebv">effective boolean value</a> of its arguments.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-logical-and"><code>&amp;&amp;</code></a></td>
+          <td>
+            <ol>
+              <li><code>Literal (xsd:boolean)</code></li>
+              <li><code>Literal (xsd:boolean)</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns a logical AND of left and right. Note that logical-or operates on the <a href="https://www.w3.org/TR/sparql11-query/#ebv">effective boolean value</a> of its arguments.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-RDFterm-equal"><code>=</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if both terms are the same follow these <a href="https://www.w3.org/TR/sparql11-query/#func-RDFterm-equal">rules</a>. A type error is produced if both arguments are literals but not the same.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-sameTerm"><code>sameterm</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Term</code></li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Returns true if both terms are the same follow these <a href="https://www.w3.org/TR/sparql11-query/#func-RDFterm-equal">rules</a>. False is returned instead of type errors.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-in"><code>in</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Expression</code> (variable number of arguments)</li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Tests whether the RDF term on the left-hand side is found in the values of list of expressions on the right-hand side.</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.w3.org/TR/sparql11-query/#func-not-in"><code>notin</code></a></td>
+          <td>
+            <ol>
+              <li><code>Term</code></li>
+              <li><code>Expression</code> (variable number of arguments)</li>
+            </ol>
+          </td>
+          <td><code>Literal (xsd:boolean)</code></td>
+          <td>Tests whether the RDF term on the left-hand side is not found in the values of list of expressions on the right-hand side.</td>
         </tr>
       </tbody>
     </table>
