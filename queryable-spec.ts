@@ -38,7 +38,9 @@ interface Bindings {
  */
 interface BindingsFactory {
   bindings(entries: [RDF.Variable, RDF.Term][]): Bindings;
-  merge(bindings: Bindings[]): Bindings;
+  // NOTE: returns undefined in case of conflicting bindings, i.e. bindings
+  //       having the same variables.
+  merge(bindings: Bindings[]): Bindings|undefined;
 }
 
 /*
