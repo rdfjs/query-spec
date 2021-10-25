@@ -6,7 +6,7 @@ import {EventEmitter} from 'events'; // TODO: refer to underlying interface, not
 /*
  * Helper union type 
  */
-type termName = 'subject' | 'predicate' | 'object' | 'graph';
+type TermName = 'subject' | 'predicate' | 'object' | 'graph';
 
 /*
  * Custom typings for the RDF/JS Stream interface as the current
@@ -49,37 +49,34 @@ interface BindingsFactory {
  * by implementors.
  */
 
-interface BaseQueryResultMetadata<OrderItemsType> {
-  cardinality?: number; // Cardinality estimate
+interface QueryResultMetadata<OrderItemsType> {
+  cardinality?: number;
   order?: OrderItemsType[];
+  [key: string]: any;
 }
 
-interface BaseQueryResult<MetadataType extends BaseQueryResultMetadata<RDF.Variable | termName>> {
+interface BaseQueryResult<MetadataOrderType> {
   type: 'bindings' | 'quads' | 'boolean';
-  metadata(opts: Partial<Record<keyof MetadataType, boolean>>): Promise<MetadataType>;
+  metadata(opts: { [key: string]: any }): Promise<QueryResultMetadata<MetadataOrderType>>;
 }
 
-interface QueryResultBindings<MetadataType extends BaseQueryResultMetadata<RDF.Variable>> extends BaseQueryResult<MetadataType> {
+interface QueryResultBindings extends BaseQueryResult<RDF.Variable> {
   type: 'bindings';
-  bindings(): Promise<Bindings[]>;
   stream(): Stream<Bindings>;
   variables: RDF.Variable[];
 }
     
-interface QueryResultQuads<MetadataType extends BaseQueryResultMetadata<termName>> extends BaseQueryResult<MetadataType> {
+interface QueryResultQuads extends BaseQueryResult<TermName> {
   type: 'quads';
-  quads(): Promise<RDF.Quad[]>;
   stream(): Stream<RDF.Quad>;
 }
 
-interface QueryResultBoolean<MetadataType extends BaseQueryResultMetadata<any>> extends BaseQueryResult<MetadataType> {
+interface QueryResultBoolean extends BaseQueryResult<any> {
   type: 'boolean';
-  value: Promise<boolean>;
+  value(): Promise<boolean>;
 }
 
-type QueryResult<M> = QueryResultBindings<M> | QueryResultQuads<M> | QueryResultBoolean<M>;
-
-/*
+type QueryResult = QueryResultBindings | QueryResultQuads | QueryResultBoolean;/*
  * Context objects provide a way to pass additional bits information to
  * implementors, such as but not limited to:
  * - data sources
@@ -118,11 +115,11 @@ type Algebra = {}; // TODO: define this (possible starting point: https://github
  */
 
 interface Queryable<SourceType> {
-  query<MetadataType, ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResult<MetadataType>>;
+  query<MetadataType, ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResult>;
 }
     
 interface QueryableAlgebra<SourceType> {
-  query<MetadataType, ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra, context?: ContextType): Promise<QueryResult<MetadataType>>;
+  query<MetadataType, ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra, context?: ContextType): Promise<QueryResult>;
 }
 
 /*
@@ -131,13 +128,13 @@ interface QueryableAlgebra<SourceType> {
  */
 
 interface QueryableSparql<SourceType> {
-  ask?<MetadataType, ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultBoolean<MetadataType>>;
-  select?<MetadataType, ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultBindings<MetadataType>>;
-  construct?<MetadataType, ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultQuads<MetadataType>>;
+  boolean?<ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultBoolean>;
+  bindings?<ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultBindings>;
+  quads?<ContextType extends QueryStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryResultQuads>;
 }
 
 interface QueryableAlgebraSparql<SourceType> {
-  ask?<MetadataType, ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Ask, context?: ContextType): Promise<QueryResultBoolean<MetadataType>>;
-  select?<MetadataType, ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Project, context?: ContextType): Promise<QueryResultBindings<MetadataType>>;
-  construct?<MetadataType, ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Construct, context?: ContextType): Promise<QueryResultQuads<MetadataType>>;
+  boolean?<ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Ask, context?: ContextType): Promise<QueryResultBoolean>;
+  bindings?<ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Project, context?: ContextType): Promise<QueryResultBindings>;
+  quads?<ContextType extends QueryAlgebraContext<SourceType>>(query: Algebra.Construct, context?: ContextType): Promise<QueryResultQuads>;
 }
