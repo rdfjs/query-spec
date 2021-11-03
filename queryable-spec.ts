@@ -342,6 +342,7 @@ type QueryableResult = QueryableResultBindings | QueryableResultQuads | Queryabl
 interface QueryableContext<SourceType> {
   sources: [SourceType, ...SourceType[]];
   queryTimestamp?: Date; // Required for certain SPARQL operations such as NOW().
+  [key: string]: any;
 }
     
 interface QueryableStringContext<SourceType> extends QueryableContext<SourceType> {
@@ -364,11 +365,11 @@ interface QueryableFormat {
  */
 
 interface Queryable<SourceType> {
-  query<MetadataType, ContextType extends QueryableStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryableResult>;
+  query(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryableResult>;
 }
     
 interface QueryableAlgebra<SourceType> {
-  query<MetadataType, ContextType extends QueryableAlgebraContext<SourceType>>(query: Algebra.Operation, context?: ContextType): Promise<QueryableResult>;
+  query(query: Algebra.Operation, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResult>;
 }
 
 /*
@@ -377,13 +378,13 @@ interface QueryableAlgebra<SourceType> {
  */
 
 interface QueryableSparql<SourceType> {
-  boolean?<ContextType extends QueryableStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryableResultBoolean>;
-  bindings?<ContextType extends QueryableStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryableResultBindings>;
-  quads?<ContextType extends QueryableStringContext<SourceType>>(query: string, context?: ContextType): Promise<QueryableResultQuads>;
+  boolean?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBoolean>;
+  bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBindings>;
+  quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultQuads>;
 }
 
 interface QueryableAlgebraSparql<SourceType> {
-  boolean?<ContextType extends QueryableAlgebraContext<SourceType>>(query: Algebra.Ask, context?: ContextType): Promise<QueryableResultBoolean>;
-  bindings?<ContextType extends QueryableAlgebraContext<SourceType>>(query: Algebra.Project, context?: ContextType): Promise<QueryableResultBindings>;
-  quads?<ContextType extends QueryableAlgebraContext<SourceType>>(query: Algebra.Construct, context?: ContextType): Promise<QueryableResultQuads>;
+  boolean?(query: Algebra.Ask, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBoolean>;
+  bindings?(query: Algebra.Project, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBindings>;
+  quads?(query: Algebra.Construct, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultQuads>;
 }
