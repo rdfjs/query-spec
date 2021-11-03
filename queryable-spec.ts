@@ -118,6 +118,41 @@ interface FilterableResultMetadataCount {
    */
   value: number;
 };
+
+/**
+ * TBD
+ */
+ interface FilterableCost {
+  /**
+   * An estimation of how many iterations over items are executed.
+   * This is used to determine the CPU cost.
+   */
+  iterations: number;
+  /**
+   * An estimation of how many items are stored in memory.
+   * This is used to determine the memory cost.
+   */
+  persistedItems: number;
+  /**
+   * An estimation of how many items block the stream.
+   * This is used to determine the time the stream is not progressing anymore.
+   */
+  blockingItems: number;
+  /**
+   * An estimation of the time to request items from sources.
+   * This estimation can be based on the `cardinality`, `pageSize`, and `requestTime` metadata entries.
+   * This is used to determine the I/O cost.
+   */
+  requestTime: number;
+}
+
+/**
+ * TBD
+ */
+interface FilterableOrder {
+  cost: FilterableCost;
+  terms: { term: TermName, direction: 'asc' | 'desc' }[];
+}
   
 /**
  * A QueryResultMetadata is an object that contains metadata about a certain
@@ -126,10 +161,16 @@ interface FilterableResultMetadataCount {
 interface FilterableResultMetadata {
   
   /**
-   * count is an optional field that contains metadata about the number of 
-   * quads in the result stream.
+   * An optional field that contains metadata about the number of quads in the
+   * result stream.
    */
   count?: FilterableResultMetadataCount;
+
+  /**
+   * An optional field that contains the available options for quad sorting
+   * based on the provided pattern, expression and options.
+   */
+  availableOrders?: FilterableOrder[];
 };
 
 /**
@@ -145,6 +186,8 @@ interface FilterableResultMetadataOptions {
   count?: 'estimate' | 'exact';
 };
 
+
+
 /**
  * A FilterResult is an object that represents the result of a filter 
  * expression of FilterableSource for a given quad pattern and expression. 
@@ -156,7 +199,7 @@ interface FilterableResult {
    * Returns a Stream containing all the quads that matched the given quad
    * pattern and expression.
    */
-  quads(): Stream<RDF.Quad>;
+  quads(opts?: { order?: FilterableOrder }): Stream<RDF.Quad>;
 
   /**
    * Asynchronously returns a QueryResultMetadata, that contains the metadata
@@ -172,6 +215,7 @@ interface FilterableResult {
    */
   isSupported(): Promise<boolean>;
 };
+
 /* 
  * A FilterableSource is an object that produces a FilterableSourceResult that
  * can emit quads. The emitted quads can be directly contained in this 
@@ -211,12 +255,16 @@ interface FilterableSource {
     obj?: RDF.Term,
     graph?: RDF.Term,
     expression?: Expression,
+    opts?: { 
+      limit?: number; 
+      offset?: number; 
+    },
   ): FilterableResult;
 };
 
 
 /******************************************************************************
-                              FILTERABLE SOURCE
+                              QUERYABLE SOURCE
  *****************************************************************************/
 
 /*
