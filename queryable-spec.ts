@@ -1,6 +1,5 @@
 
 import RDF from '@rdfjs/types';
-import { Algebra } from 'sparqlalgebrajs';
 import { EventEmitter } from 'events'; // TODO: refer to underlying interface, not to the class
 
 /******************************************************************************
@@ -19,6 +18,47 @@ type TermName = 'subject' | 'predicate' | 'object' | 'graph';
  */
 export interface Stream<Q> extends EventEmitter {
   read(): Q | null;
+}
+
+/**
+ * QueryOperationCost represents the cost of a given query operation.
+ */
+ interface QueryOperationCost {
+  /**
+   * An estimation of how many iterations over items are executed.
+   * This is used to determine the CPU cost.
+   */
+  iterations: number;
+  /**
+   * An estimation of how many items are stored in memory.
+   * This is used to determine the memory cost.
+   */
+  persistedItems: number;
+  /**
+   * An estimation of how many items block the stream.
+   * This is used to determine the time the stream is not progressing anymore.
+   */
+  blockingItems: number;
+  /**
+   * An estimation of the time to request items from sources.
+   * This estimation can be based on the `cardinality`, `pageSize`, and `requestTime` metadata entries.
+   * This is used to determine the I/O cost.
+   */
+  requestTime: number;
+}
+
+/**
+ * QueryOperationOrder represents an ordering of the results of a given
+ * query operation. QueryOperationOrder objects can be returned by
+ * implementations of both the Filterable (quad orderings) and Queryable
+ * (bindings orderings) interfaces. Furthermore, QueryOperationObjects are
+ * used to represent both available orderings (i.e. orderings that may be
+ * requested by callers) and returned orderings (i.e. orderings followed
+ * by the returned iterators).
+ */
+interface QueryOperationOrder<T extends TermName | RDF.Variable> {
+  cost: QueryOperationCost;
+  terms: { term: T, direction: 'asc' | 'desc' }[];
 }
 
 
@@ -118,41 +158,6 @@ interface FilterableResultMetadataCount {
    */
   value: number;
 };
-
-/**
- * TBD
- */
- interface FilterableCost {
-  /**
-   * An estimation of how many iterations over items are executed.
-   * This is used to determine the CPU cost.
-   */
-  iterations: number;
-  /**
-   * An estimation of how many items are stored in memory.
-   * This is used to determine the memory cost.
-   */
-  persistedItems: number;
-  /**
-   * An estimation of how many items block the stream.
-   * This is used to determine the time the stream is not progressing anymore.
-   */
-  blockingItems: number;
-  /**
-   * An estimation of the time to request items from sources.
-   * This estimation can be based on the `cardinality`, `pageSize`, and `requestTime` metadata entries.
-   * This is used to determine the I/O cost.
-   */
-  requestTime: number;
-}
-
-/**
- * TBD
- */
-interface FilterableOrder {
-  cost: FilterableCost;
-  terms: { term: TermName, direction: 'asc' | 'desc' }[];
-}
   
 /**
  * A QueryResultMetadata is an object that contains metadata about a certain
@@ -170,7 +175,7 @@ interface FilterableResultMetadata {
    * An optional field that contains the available options for quad sorting
    * based on the provided pattern, expression and options.
    */
-  availableOrders?: FilterableOrder[];
+  availableOrders?: QueryOperationOrder<TermName>[];
 };
 
 /**
@@ -199,7 +204,7 @@ interface FilterableResult {
    * Returns a Stream containing all the quads that matched the given quad
    * pattern and expression.
    */
-  quads(opts?: { order?: FilterableOrder }): Stream<RDF.Quad>;
+  quads(opts?: { order?: QueryOperationOrder<TermName> }): Stream<RDF.Quad>;
 
   /**
    * Asynchronously returns a QueryResultMetadata, that contains the metadata
@@ -269,15 +274,21 @@ interface FilterableSource {
 
 /*
  * Map-like representation of Bindings as using plain objects could lead
- * to collisions between variable names and object properties.
- * 
- * Long-term goal: maintain compatibility with the native Map class.
+ * to collisions between variable names and object properties. Support for
+ * immutability is required (but implementations are free to be mutable) which
+ * determines the return value of the set() and delete() methods to be an 
+ * instance of Bindings (potentially a different one).
  */ 
 interface Bindings {
   type: 'bindings';
-  get(variable: RDF.Variable): RDF.Term;
-  keys(): RDF.Variable[];
-  entries(): [RDF.Variable, RDF.Term][];
+  has: (key: RDF.Variable) => boolean;
+  get: (key: RDF.Variable) => RDF.Term | undefined;
+  set: (key: RDF.Variable, value: RDF.Term) => Bindings;
+  delete: (key: RDF.Variable) => Bindings;
+  keys: () => Iterator<RDF.Variable>;
+  values: () => Iterator<RDF.Term>;
+  entries: () => Iterator<[RDF.Variable, RDF.Term]>;
+  forEach: (fn: (value: RDF.Term, key: RDF.Variable) => any) => void;
   size: number;
 }
 
@@ -288,10 +299,15 @@ interface Bindings {
  * common manipulations of bindings objects.
  */
 interface BindingsFactory {
-  bindings(entries: [RDF.Variable, RDF.Term][]): Bindings;
-  // NOTE: returns undefined in case of conflicting bindings, i.e. bindings
-  //       having the same variables.
-  merge(bindings: Bindings[]): Bindings|undefined;
+  bindings: (entries?: [RDF.Variable, RDF.Term][]) => Bindings;
+  filter: (bindings: Bindings, fn: (value: RDF.Term, key: RDF.Variable) => boolean) => Bindings;
+  map: (bindings: Bindings, fn: (value: RDF.Term, key: RDF.Variable) => RDF.Term) => Bindings;
+  merge: (left: Bindings, right: Bindings) => Bindings;
+  mergeWith: (
+    merger: (left: RDF.Term, right: RDF.Term, key: RDF.Variable) => RDF.Term,
+    left: Bindings,
+    right: Bindings,
+  ) => Bindings;
 }
 
 /*
@@ -300,34 +316,42 @@ interface BindingsFactory {
  * by implementors.
  */
 
-interface QueryableResultMetadata<OrderItemsType> {
+interface QueryableResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
   cardinality?: number;
-  order?: OrderItemsType[];
+  availableOrders?: QueryOperationOrder<OrderItemsType>[];
   [key: string]: any;
 }
 
-interface BaseQueryableResult<MetadataOrderType> {
-  type: 'bindings' | 'quads' | 'boolean';
-  metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<MetadataOrderType>>;
+interface BaseQueryableResult {
+  type: 'bindings' | 'quads' | 'boolean' | 'void';
 }
 
-interface QueryableResultBindings extends BaseQueryableResult<RDF.Variable> {
+interface QueryableResultBindings extends BaseQueryableResult {
   type: 'bindings';
-  stream(): Stream<Bindings>;
+  bindings(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Stream<Bindings>;
   variables: RDF.Variable[];
+  metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<RDF.Variable>>;
 }
     
-interface QueryableResultQuads extends BaseQueryableResult<TermName> {
+interface QueryableResultQuads extends BaseQueryableResult {
   type: 'quads';
-  stream(): Stream<RDF.Quad>;
+  quads(opts?: { order?: QueryOperationOrder<TermName> }): Stream<RDF.Quad>;
+  metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<TermName>>;
 }
 
-interface QueryableResultBoolean extends BaseQueryableResult<any> {
+interface QueryableResultBoolean extends BaseQueryableResult {
   type: 'boolean';
   value(): Promise<boolean>;
 }
 
-type QueryableResult = QueryableResultBindings | QueryableResultQuads | QueryableResultBoolean;/*
+interface QueryableResultVoid extends BaseQueryableResult {
+  type: 'void';
+  execute(): Promise<void>;
+}
+
+type QueryableResult = QueryableResultBindings | QueryableResultBoolean | QueryableResultQuads | QueryableResultVoid;
+
+/*
  * Context objects provide a way to pass additional bits information to
  * implementors, such as but not limited to:
  * - data sources
@@ -358,18 +382,23 @@ interface QueryableFormat {
   extensions: string[]; // TODO: leave the syntax of these extensions open for now?
 }
 
+/**
+ * Placeholder to represent SPARQL Algebra trees.
+ */
+type Algebra = {};
+
 /* 
  * Generic query interfaces. These allow engines to return any type of result
  * object for any type of query, supporting the kind of flexibility required
  * by engines such as Comunica.
  */
 
-interface Queryable<SourceType> {
-  query(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryableResult>;
+interface Queryable<SourceType, ResultType extends QueryableResult> {
+  query(query: string, context?: QueryableStringContext<SourceType>): Promise<ResultType>;
 }
     
-interface QueryableAlgebra<SourceType> {
-  query(query: Algebra.Operation, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResult>;
+interface QueryableAlgebra<SourceType, ResultType extends QueryableResult> {
+  query(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<ResultType>;
 }
 
 /*
@@ -381,10 +410,12 @@ interface QueryableSparql<SourceType> {
   boolean?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBoolean>;
   bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBindings>;
   quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultQuads>;
+  void?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultVoid>;
 }
 
 interface QueryableAlgebraSparql<SourceType> {
-  boolean?(query: Algebra.Ask, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBoolean>;
-  bindings?(query: Algebra.Project, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBindings>;
-  quads?(query: Algebra.Construct, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultQuads>;
+  boolean?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBoolean>;
+  bindings?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBindings>;
+  quads?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultQuads>;
+  void?(query: Algebra, context?: QueryableContext<SourceType>): Promise<QueryableResultVoid>;
 }
