@@ -283,7 +283,7 @@ interface FilterableSource {
  * determines the return value of the set() and delete() methods to be an 
  * instance of Bindings (potentially a different one).
  */ 
-interface Bindings {
+interface Bindings extends Iterable<[RDF.Variable, RDF.Term]> {
   type: 'bindings';
   has: (key: RDF.Variable) => boolean;
   get: (key: RDF.Variable) => RDF.Term | undefined;
@@ -294,6 +294,7 @@ interface Bindings {
   entries: () => Iterator<[RDF.Variable, RDF.Term]>;
   forEach: (fn: (value: RDF.Term, key: RDF.Variable) => any) => void;
   size: number;
+  [Symbol.iterator]: () => Iterator<[RDF.Variable, RDF.Term]>;
 }
 
 /*
