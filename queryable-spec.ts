@@ -327,29 +327,25 @@ interface QueryableResultMetadata<OrderItemsType extends TermName | RDF.Variable
   [key: string]: any;
 }
 
-interface BaseQueryableResult {
-  type: 'bindings' | 'quads' | 'boolean' | 'void';
-}
-
-interface QueryableResultBindings extends BaseQueryableResult {
+interface QueryableResultBindings {
   type: 'bindings';
   execute(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Promise<Stream<Bindings>>;
   variables: RDF.Variable[];
   metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<RDF.Variable>>;
 }
     
-interface QueryableResultQuads extends BaseQueryableResult {
+interface QueryableResultQuads {
   type: 'quads';
   execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
   metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<TermName>>;
 }
 
-interface QueryableResultBoolean extends BaseQueryableResult {
+interface QueryableResultBoolean {
   type: 'boolean';
   execute(): Promise<boolean>;
 }
 
-interface QueryableResultVoid extends BaseQueryableResult {
+interface QueryableResultVoid {
   type: 'void';
   execute(): Promise<void>;
 }
