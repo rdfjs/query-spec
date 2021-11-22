@@ -45,6 +45,10 @@ export interface Stream<Q> extends EventEmitter {
    * This is used to determine the I/O cost.
    */
   requestTime: number;
+  /**
+   * Custom properties
+   */
+  [key: string]: any;
 }
 
 /**
