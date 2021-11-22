@@ -208,7 +208,7 @@ interface FilterableResult {
    * Returns a Stream containing all the quads that matched the given quad
    * pattern and expression.
    */
-  quads(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
+  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
 
   /**
    * Asynchronously returns a QueryResultMetadata, that contains the metadata
