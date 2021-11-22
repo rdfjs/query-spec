@@ -287,8 +287,6 @@ interface Bindings extends Iterable<[RDF.Variable, RDF.Term]> {
   type: 'bindings';
   has: (key: RDF.Variable) => boolean;
   get: (key: RDF.Variable) => RDF.Term | undefined;
-  set: (key: RDF.Variable, value: RDF.Term) => Bindings;
-  delete: (key: RDF.Variable) => Bindings;
   keys: () => Iterator<RDF.Variable>;
   values: () => Iterator<RDF.Term>;
   entries: () => Iterator<[RDF.Variable, RDF.Term]>;
@@ -313,6 +311,8 @@ interface BindingsFactory {
     left: Bindings,
     right: Bindings,
   ) => Bindings;
+  set: (bindings: Bindings, key: RDF.Variable, value: RDF.Term) => Bindings;
+  delete: (bindings: Bindings, key: RDF.Variable) => Bindings;
 }
 
 /*
