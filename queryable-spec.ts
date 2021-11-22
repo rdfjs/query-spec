@@ -204,7 +204,7 @@ interface FilterableResult {
    * Returns a Stream containing all the quads that matched the given quad
    * pattern and expression.
    */
-  quads(opts?: { order?: QueryOperationOrder<TermName> }): Stream<RDF.Quad>;
+  quads(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
 
   /**
    * Asynchronously returns a QueryResultMetadata, that contains the metadata
@@ -328,20 +328,20 @@ interface BaseQueryableResult {
 
 interface QueryableResultBindings extends BaseQueryableResult {
   type: 'bindings';
-  bindings(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Stream<Bindings>;
+  execute(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Promise<Stream<Bindings>>;
   variables: RDF.Variable[];
   metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<RDF.Variable>>;
 }
     
 interface QueryableResultQuads extends BaseQueryableResult {
   type: 'quads';
-  quads(opts?: { order?: QueryOperationOrder<TermName> }): Stream<RDF.Quad>;
+  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
   metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<TermName>>;
 }
 
 interface QueryableResultBoolean extends BaseQueryableResult {
   type: 'boolean';
-  value(): Promise<boolean>;
+  execute(): Promise<boolean>;
 }
 
 interface QueryableResultVoid extends BaseQueryableResult {
