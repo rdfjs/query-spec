@@ -388,8 +388,10 @@ interface QueryableFormat {
 
 /**
  * Placeholder to represent SPARQL Algebra trees.
+ * Algebra typings are TBD. Reference implementations include:
+ * - https://www.npmjs.com/package/sparqlalgebrajs
  */
-type Algebra = {};
+type Algebra = any;
 
 /* 
  * Generic query interfaces. These allow engines to return any type of result
