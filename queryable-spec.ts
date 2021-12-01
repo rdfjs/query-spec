@@ -410,7 +410,7 @@ interface QueryableAlgebra<SourceType, ResultType extends QueryableResult> {
  */
 
 interface QueryableSparql<SourceType> {
-  boolean?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBoolean>;
+  boolean?(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryableResultBoolean>;
   bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBindings>;
   quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultQuads>;
   void?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultVoid>;
