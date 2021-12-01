@@ -368,7 +368,7 @@ interface BindingsFactory {
 
 
 
-type QueryableResult = QueryResultBindings | QueryResultBoolean | QueryResultQuads | QueryResultVoid;
+type QueryResult = QueryResultBindings | QueryResultBoolean | QueryResultQuads | QueryResultVoid;
 
 /*
  * Context objects provide a way to pass additional bits information to
@@ -382,20 +382,20 @@ type QueryableResult = QueryResultBindings | QueryResultBoolean | QueryResultQua
 
 // SourceType can be anything the query engine defines
 // TODO: we may consider defining some standards, like 'string', RDF.Source, ...
-interface QueryableContext<SourceType> {
+interface QueryContext<SourceType> {
   sources: [SourceType, ...SourceType[]];
   queryTimestamp?: Date; // Required for certain SPARQL operations such as NOW().
   [key: string]: any;
 }
     
-interface QueryableStringContext<SourceType> extends QueryableContext<SourceType> {
+interface QueryStringContext<SourceType> extends QueryableContext<SourceType> {
   queryFormat?: QueryableFormat; // defaults to { language: 'SPARQL', version: '1.1', extensions: [] }
   baseIRI?: string; // Required for parsing SPARQL queries
 };
 
-interface QueryableAlgebraContext<SourceType> extends QueryableContext<SourceType> {};
+interface QueryAlgebraContext<SourceType> extends QueryableContext<SourceType> {};
     
-interface QueryableFormat {
+interface QueryFormat {
   language: string; // Like 'SPARQL'
   version: string; // Like '1.1'
   extensions: string[]; // TODO: leave the syntax of these extensions open for now?
