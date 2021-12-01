@@ -162,12 +162,14 @@ interface BaseQueryResult {
   isSupported(): Promise<boolean>;
 }
 
+interface QueryResultBindingsMetadata extends QueryResultMetadata<RDF.Variable> {
+  variables: RDF.Variable[];
+}
 
 interface QueryResultBindings extends BaseQueryResult {
   type: 'bindings';
   execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
-  variables: RDF.Variable[];
-  metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<RDF.Variable>>;
+  metadata(opts: QueryResultMetadataOptions): Promise<QueryResultBindingsMetadata>;
   isSupported(): Promise<boolean>;
 }
     
