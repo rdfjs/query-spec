@@ -173,7 +173,7 @@ interface FilterableResultMetadata {
    * An optional field that contains metadata about the number of quads in the
    * result stream.
    */
-  count?: FilterableResultMetadataCount;
+  cardinality?: FilterableResultMetadataCount;
 
   /**
    * An optional field that contains the available options for quad sorting
