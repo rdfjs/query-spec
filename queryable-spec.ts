@@ -310,7 +310,13 @@ interface BindingsFactory {
   bindings: (entries?: [RDF.Variable, RDF.Term][]) => Bindings;
   filter: (bindings: Bindings, fn: (value: RDF.Term, key: RDF.Variable) => boolean) => Bindings;
   map: (bindings: Bindings, fn: (value: RDF.Term, key: RDF.Variable) => RDF.Term) => Bindings;
-  merge: (left: Bindings, right: Bindings) => Bindings;
+
+  /**
+   * Returns undefined in the presence of merge conflicts, that is when `left`
+   * and `right` both include a common variable (key) set to different terms
+   * (values).
+   */
+  merge: (left: Bindings, right: Bindings) => Bindings | undefined;
   mergeWith: (
     merger: (left: RDF.Term, right: RDF.Term, key: RDF.Variable) => RDF.Term,
     left: Bindings,
