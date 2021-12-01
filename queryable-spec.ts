@@ -65,6 +65,118 @@ interface QueryOperationOrder<T extends TermName | RDF.Variable> {
   terms: { term: T, direction: 'asc' | 'desc' }[];
 }
 
+interface QueryResultCardinality {
+  /**
+   * indicates the type of counting that was done, and MUST either be 
+   * "estimate" or "exact".
+   */
+  type: 'estimate' | 'exact';
+
+  /**
+   * Indicates an estimate of the number of quads in the stream if 
+   * type = "estimate", or the exact number of quads in the stream if 
+   * type = "exact".
+   */
+  value: number;
+}
+
+/**
+ * A QueryResultMetadata is an object that contains metadata about a certain
+ * query result.
+ */
+interface QueryResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
+
+  /**
+   * An optional field that contains metadata about the number of quads in the
+   * result stream.
+   */
+  cardinality?: QueryResultCardinality;
+
+  /**
+   * An optional field that contains the available options for quad sorting
+   * based on the provided pattern, expression and options.
+   */
+  availableOrders?: QueryOperationOrder<OrderItemsType>[];
+
+  /**
+   * Custom properties
+   */
+  [key: string]: any;
+}
+
+/**
+ * A QueryResultMetadataOptions is an object that gives suggestions on what
+ * type of metadata is desired, such as when invoking FilterResult.metadata.
+ */
+ interface QueryResultMetadataOptions {
+
+  /**
+   * optional field that MAY either contain "estimate" or "exact". If defined,
+   * this type MUST correspond to the type in QueryResultMetadataCardinality.
+   */
+  cardinality?: 'estimate' | 'exact';
+
+  /**
+   * Custom properties
+   */
+  [key: string]: any;
+};
+
+/**
+ * Generic interface that defines the API pattern for query result objects.
+ */
+interface BaseQueryResult {
+  
+  type: string;
+
+  /**
+   * Returns either a stream containing all the items that match the given query,
+   * a boolean or void depending on the semantics of the given query.
+   */
+  execute(opts?: any): Promise<Stream<any> | boolean | void>;
+
+  /**
+   * Asynchronously metadata of the current result.
+   */
+  metadata?(opts?: QueryResultMetadataOptions): Promise<QueryResultMetadata<any>>;
+
+  /**
+   * Asynchronously returns a boolean indicating if the requested expression is
+   * supported. If it returns true, execute() and metadata() MAY produce valid 
+   * results. If it returns false, execute() MUST return a stream emitting an 
+   * error, and metadata() MUST reject.
+   */
+  isSupported(): Promise<boolean>;
+}
+
+
+interface QueryResultBindings extends BaseQueryResult {
+  type: 'bindings';
+  execute(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Promise<Stream<Bindings>>;
+  variables: RDF.Variable[];
+  metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<RDF.Variable>>;
+  isSupported(): Promise<boolean>;
+}
+    
+interface QueryResultQuads extends BaseQueryResult {
+  type: 'quads';
+  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
+  metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<TermName>>;
+  isSupported(): Promise<boolean>;
+}
+
+interface QueryResultBoolean extends BaseQueryResult {
+  type: 'boolean';
+  execute(): Promise<boolean>;
+  isSupported(): Promise<boolean>;
+}
+
+interface QueryResultVoid extends BaseQueryResult {
+  type: 'void';
+  execute(): Promise<void>;
+  isSupported(): Promise<boolean>;
+}
+
 
 /******************************************************************************
                               FILTERABLE SOURCE
@@ -143,93 +255,6 @@ interface ExpressionFactory {
   termExpression(term: RDF.Term): TermExpression;
 };
 
-
-/**
- * QueryResultMetadataCount is part of the QueryResultMetadata interface to
- * represent metadata about the number of quads in the result stream.
- */
-interface FilterableResultMetadataCardinality {
-  /**
-   * indicates the type of counting that was done, and MUST either be 
-   * "estimate" or "exact".
-   */
-  type: 'estimate' | 'exact';
-
-  /**
-   * Indicates an estimate of the number of quads in the stream if 
-   * type = "estimate", or the exact number of quads in the stream if 
-   * type = "exact".
-   */
-  value: number;
-};
-  
-/**
- * A QueryResultMetadata is an object that contains metadata about a certain
- * query result, such as invoking FilterableSource.matchExpression.
- */
-interface FilterableResultMetadata {
-  
-  /**
-   * An optional field that contains metadata about the number of quads in the
-   * result stream.
-   */
-  cardinality?: FilterableResultMetadataCardinality;
-
-  /**
-   * An optional field that contains the available options for quad sorting
-   * based on the provided pattern, expression and options.
-   */
-  availableOrders?: QueryOperationOrder<TermName>[];
-
-  /**
-   * Custom properties
-   */
-  [key: string]: any;
-};
-
-/**
- * A QueryResultMetadataOptions is an object that gives suggestions on what
- * type of metadata is desired, such as when invoking FilterResult.metadata.
- */
-interface FilterableResultMetadataOptions {
-
-  /**
-   * optional field that MAY either contain "estimate" or "exact". If defined,
-   * this type MUST correspond to the type in QueryResultMetadataCount.
-   */
-  cardinality?: 'estimate' | 'exact';
-};
-
-
-
-/**
- * A FilterResult is an object that represents the result of a filter 
- * expression of FilterableSource for a given quad pattern and expression. 
- * It MAY create results lazily after one of its methods is invoked.
- */
-interface FilterableResult {
-
-  /**
-   * Returns a Stream containing all the quads that matched the given quad
-   * pattern and expression.
-   */
-  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
-
-  /**
-   * Asynchronously returns a QueryResultMetadata, that contains the metadata
-   * of the current result.
-   */
-  metadata(opts?: FilterableResultMetadataOptions): Promise<FilterableResultMetadata>;
-  
-  /**
-   * Asynchronously returns a boolean indicating if the requested expression is
-   * supported by the FilterableSource. If it returns true, quads() and 
-   * metadata() MAY produce a valid result. If it returns false, quads() MUST
-   * return a stream emitting an error, and metadata() MUST reject.
-   */
-  isSupported(): Promise<boolean>;
-};
-
 /* 
  * A FilterableSource is an object that produces a FilterableSourceResult that
  * can emit quads. The emitted quads can be directly contained in this 
@@ -273,7 +298,7 @@ interface FilterableSource {
       length?: number; 
       start?: number; 
     },
-  ): FilterableResult;
+  ): QueryResultQuads;
 };
 
 
@@ -326,42 +351,9 @@ interface BindingsFactory {
   delete: (bindings: Bindings, key: RDF.Variable) => Bindings;
 }
 
-/*
- * Base interfaces to represent query results. These interfaces are generic
- * with respect to the types of query metadata objects. These can be extended
- * by implementors.
- */
 
-interface QueryableResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
-  cardinality?: number;
-  availableOrders?: QueryOperationOrder<OrderItemsType>[];
-  [key: string]: any;
-}
 
-interface QueryableResultBindings {
-  type: 'bindings';
-  execute(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Promise<Stream<Bindings>>;
-  variables: RDF.Variable[];
-  metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<RDF.Variable>>;
-}
-    
-interface QueryableResultQuads {
-  type: 'quads';
-  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
-  metadata(opts: { [key: string]: any }): Promise<QueryableResultMetadata<TermName>>;
-}
-
-interface QueryableResultBoolean {
-  type: 'boolean';
-  execute(): Promise<boolean>;
-}
-
-interface QueryableResultVoid {
-  type: 'void';
-  execute(): Promise<void>;
-}
-
-type QueryableResult = QueryableResultBindings | QueryableResultBoolean | QueryableResultQuads | QueryableResultVoid;
+type QueryableResult = QueryResultBindings | QueryResultBoolean | QueryResultQuads | QueryResultVoid;
 
 /*
  * Context objects provide a way to pass additional bits information to
@@ -421,15 +413,15 @@ interface QueryableAlgebra<SourceType, ResultType extends QueryableResult> {
  */
 
 interface QueryableSparql<SourceType> {
-  boolean?(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryableResultBoolean>;
-  bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultBindings>;
-  quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultQuads>;
-  void?(query: string, context?: QueryableContext<SourceType>): Promise<QueryableResultVoid>;
+  boolean?(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryResultBoolean>;
+  bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultBindings>;
+  quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultQuads>;
+  void?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultVoid>;
 }
 
 interface QueryableAlgebraSparql<SourceType> {
-  boolean?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBoolean>;
-  bindings?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultBindings>;
-  quads?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryableResultQuads>;
-  void?(query: Algebra, context?: QueryableContext<SourceType>): Promise<QueryableResultVoid>;
+  boolean?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultBoolean>;
+  bindings?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultBindings>;
+  quads?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultQuads>;
+  void?(query: Algebra, context?: QueryableContext<SourceType>): Promise<QueryResultVoid>;
 }
