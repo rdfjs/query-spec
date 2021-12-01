@@ -192,7 +192,7 @@ interface FilterableResultMetadataOptions {
    * optional field that MAY either contain "estimate" or "exact". If defined,
    * this type MUST correspond to the type in QueryResultMetadataCount.
    */
-  count?: 'estimate' | 'exact';
+  cardinality?: 'estimate' | 'exact';
 };
 
 
