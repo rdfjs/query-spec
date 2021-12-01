@@ -173,7 +173,7 @@ interface FilterableResultMetadata {
    * An optional field that contains metadata about the number of quads in the
    * result stream.
    */
-  cardinality?: FilterableResultMetadataCount;
+  cardinality?: FilterableResultMetadataCardinality;
 
   /**
    * An optional field that contains the available options for quad sorting
@@ -265,8 +265,8 @@ interface FilterableSource {
     graph?: RDF.Term,
     expression?: Expression,
     opts?: { 
-      limit?: number; 
-      offset?: number; 
+      length?: number; 
+      start?: number; 
     },
   ): FilterableResult;
 };
