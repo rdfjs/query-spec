@@ -388,12 +388,12 @@ interface QueryContext<SourceType> {
   [key: string]: any;
 }
     
-interface QueryStringContext<SourceType> extends QueryableContext<SourceType> {
-  queryFormat?: QueryableFormat; // defaults to { language: 'SPARQL', version: '1.1', extensions: [] }
+interface QueryStringContext<SourceType> extends QueryContext<SourceType> {
+  queryFormat?: QueryFormat; // defaults to { language: 'SPARQL', version: '1.1', extensions: [] }
   baseIRI?: string; // Required for parsing SPARQL queries
 };
 
-interface QueryAlgebraContext<SourceType> extends QueryableContext<SourceType> {};
+interface QueryAlgebraContext<SourceType> extends QueryContext<SourceType> {};
     
 interface QueryFormat {
   language: string; // Like 'SPARQL'
@@ -414,12 +414,12 @@ type Algebra = any;
  * by engines such as Comunica.
  */
 
-interface Queryable<SourceType, ResultType extends QueryableResult> {
-  query(query: string, context?: QueryableStringContext<SourceType>): Promise<ResultType>;
+interface Queryable<SourceType, ResultType extends QueryResult> {
+  query(query: string, context?: QueryStringContext<SourceType>): Promise<ResultType>;
 }
     
-interface QueryableAlgebra<SourceType, ResultType extends QueryableResult> {
-  query(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<ResultType>;
+interface QueryableAlgebra<SourceType, ResultType extends QueryResult> {
+  query(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<ResultType>;
 }
 
 /*
@@ -428,15 +428,15 @@ interface QueryableAlgebra<SourceType, ResultType extends QueryableResult> {
  */
 
 interface QueryableSparql<SourceType> {
-  boolean?(query: string, context?: QueryableStringContext<SourceType>): Promise<QueryResultBoolean>;
-  bindings?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultBindings>;
-  quads?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultQuads>;
-  void?(query: string, context?: QueryableContext<SourceType>): Promise<QueryResultVoid>;
+  boolean?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryResultBoolean>;
+  bindings?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultBindings>;
+  quads?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultQuads>;
+  void?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultVoid>;
 }
 
 interface QueryableAlgebraSparql<SourceType> {
-  boolean?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultBoolean>;
-  bindings?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultBindings>;
-  quads?(query: Algebra, context?: QueryableAlgebraContext<SourceType>): Promise<QueryResultQuads>;
-  void?(query: Algebra, context?: QueryableContext<SourceType>): Promise<QueryResultVoid>;
+  boolean?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultBoolean>;
+  bindings?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultBindings>;
+  quads?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultQuads>;
+  void?(query: Algebra, context?: QueryContext<SourceType>): Promise<QueryResultVoid>;
 }
