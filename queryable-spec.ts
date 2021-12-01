@@ -148,7 +148,7 @@ interface ExpressionFactory {
  * QueryResultMetadataCount is part of the QueryResultMetadata interface to
  * represent metadata about the number of quads in the result stream.
  */
-interface FilterableResultMetadataCount {
+interface FilterableResultMetadataCardinality {
   /**
    * indicates the type of counting that was done, and MUST either be 
    * "estimate" or "exact".
