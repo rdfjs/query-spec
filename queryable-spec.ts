@@ -180,6 +180,11 @@ interface FilterableResultMetadata {
    * based on the provided pattern, expression and options.
    */
   availableOrders?: QueryOperationOrder<TermName>[];
+
+  /**
+   * Custom properties
+   */
+  [key: string]: any;
 };
 
 /**
