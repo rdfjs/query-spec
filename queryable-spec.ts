@@ -122,6 +122,19 @@ interface QueryResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
   [key: string]: any;
 };
 
+interface QueryResultExecuteOptions<OrderItemsType extends TermName | RDF.Variable> {
+  
+  /**
+   * TBD
+   */
+  order?: QueryOperationOrder<OrderItemsType>;
+
+  /**
+   * Custom properties
+   */
+  [key: string]: any;
+}
+
 /**
  * Generic interface that defines the API pattern for query result objects.
  */
@@ -152,7 +165,7 @@ interface BaseQueryResult {
 
 interface QueryResultBindings extends BaseQueryResult {
   type: 'bindings';
-  execute(opts?: { order?: QueryOperationOrder<RDF.Variable> }): Promise<Stream<Bindings>>;
+  execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
   variables: RDF.Variable[];
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<RDF.Variable>>;
   isSupported(): Promise<boolean>;
@@ -160,7 +173,7 @@ interface QueryResultBindings extends BaseQueryResult {
     
 interface QueryResultQuads extends BaseQueryResult {
   type: 'quads';
-  execute(opts?: { order?: QueryOperationOrder<TermName> }): Promise<Stream<RDF.Quad>>;
+  execute(opts?: QueryResultExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<TermName>>;
   isSupported(): Promise<boolean>;
 }
