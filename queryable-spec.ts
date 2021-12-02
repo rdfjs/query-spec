@@ -136,9 +136,9 @@ interface QueryResultExecuteOptions<OrderItemsType extends TermName | RDF.Variab
 }
 
 /**
- * Generic interface that defines the API pattern for query result objects.
+ * Generic interface that defines the API pattern for query objects.
  */
-interface BaseQueryResult {
+interface BaseQuery {
   
   type: string;
 
@@ -166,27 +166,27 @@ interface QueryResultBindingsMetadata extends QueryResultMetadata<RDF.Variable> 
   variables: RDF.Variable[];
 }
 
-interface QueryResultBindings extends BaseQueryResult {
+interface QueryBindings extends BaseQuery {
   type: 'bindings';
   execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultBindingsMetadata>;
   isSupported(): Promise<boolean>;
 }
     
-interface QueryResultQuads extends BaseQueryResult {
+interface QueryQuads extends BaseQuery {
   type: 'quads';
   execute(opts?: QueryResultExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<TermName>>;
   isSupported(): Promise<boolean>;
 }
 
-interface QueryResultBoolean extends BaseQueryResult {
+interface QueryBoolean extends BaseQuery {
   type: 'boolean';
   execute(): Promise<boolean>;
   isSupported(): Promise<boolean>;
 }
 
-interface QueryResultVoid extends BaseQueryResult {
+interface QueryVoid extends BaseQuery {
   type: 'void';
   execute(): Promise<void>;
   isSupported(): Promise<boolean>;
@@ -313,7 +313,7 @@ interface FilterableSource {
       length?: number; 
       start?: number; 
     },
-  ): QueryResultQuads;
+  ): QueryQuads;
 };
 
 
@@ -368,7 +368,7 @@ interface BindingsFactory {
 
 
 
-type QueryResult = QueryResultBindings | QueryResultBoolean | QueryResultQuads | QueryResultVoid;
+type Query = QueryBindings | QueryBoolean | QueryQuads | QueryVoid;
 
 /*
  * Context objects provide a way to pass additional bits information to
@@ -414,11 +414,11 @@ type Algebra = any;
  * by engines such as Comunica.
  */
 
-interface Queryable<SourceType, ResultType extends QueryResult> {
+interface Queryable<SourceType, ResultType extends Query> {
   query(query: string, context?: QueryStringContext<SourceType>): Promise<ResultType>;
 }
     
-interface QueryableAlgebra<SourceType, ResultType extends QueryResult> {
+interface AlgebraQueryable<SourceType, ResultType extends Query> {
   query(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<ResultType>;
 }
 
@@ -427,16 +427,16 @@ interface QueryableAlgebra<SourceType, ResultType extends QueryResult> {
  * objects are of the expected type as defined by the SPARQL spec.
  */
 
-interface QueryableSparql<SourceType> {
-  boolean?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryResultBoolean>;
-  bindings?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultBindings>;
-  quads?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultQuads>;
-  void?(query: string, context?: QueryContext<SourceType>): Promise<QueryResultVoid>;
+interface SparqlQueryable<SourceType> {
+  boolean?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryBoolean>;
+  bindings?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryBindings>;
+  quads?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryQuads>;
+  void?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryVoid>;
 }
 
-interface QueryableAlgebraSparql<SourceType> {
-  boolean?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultBoolean>;
-  bindings?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultBindings>;
-  quads?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryResultQuads>;
-  void?(query: Algebra, context?: QueryContext<SourceType>): Promise<QueryResultVoid>;
+interface SparqlAlgebraQueryable<SourceType> {
+  boolean?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryBoolean>;
+  bindings?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryBindings>;
+  quads?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryQuads>;
+  void?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryVoid>;
 }
