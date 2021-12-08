@@ -291,6 +291,10 @@ interface ExpressionFactory {
  * applying the Expression filter.
  */
 interface FilterableSource {
+
+  /**
+   * May reject given an unsupported expression.
+   */
   matchExpression(
     subject?: RDF.Term,
     predicate?: RDF.Term,
@@ -301,7 +305,7 @@ interface FilterableSource {
       length?: number; 
       start?: number; 
     },
-  ): QueryQuads;
+  ): Promise<QueryQuads>;
 };
 
 
@@ -403,10 +407,16 @@ type Algebra = any;
  */
 
 interface Queryable<SourceType, ResultType extends Query> {
+  /**
+   * May reject given an unsupported query.
+   */
   query(query: string, context?: QueryStringContext<SourceType>): Promise<ResultType>;
 }
     
 interface AlgebraQueryable<SourceType, ResultType extends Query> {
+  /**
+   * May reject given an unsupported query.
+   */
   query(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<ResultType>;
 }
 
