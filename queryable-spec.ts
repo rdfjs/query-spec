@@ -152,14 +152,6 @@ interface BaseQuery {
    * Asynchronously metadata of the current result.
    */
   metadata?(opts?: QueryResultMetadataOptions): Promise<QueryResultMetadata<any>>;
-
-  /**
-   * Asynchronously returns a boolean indicating if the requested expression is
-   * supported. If it returns true, execute() and metadata() MAY produce valid 
-   * results. If it returns false, execute() MUST return a stream emitting an 
-   * error, and metadata() MUST reject.
-   */
-  isSupported(): Promise<boolean>;
 }
 
 interface QueryResultBindingsMetadata extends QueryResultMetadata<RDF.Variable> {
@@ -170,26 +162,22 @@ interface QueryBindings extends BaseQuery {
   type: 'bindings';
   execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultBindingsMetadata>;
-  isSupported(): Promise<boolean>;
 }
     
 interface QueryQuads extends BaseQuery {
   type: 'quads';
   execute(opts?: QueryResultExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
   metadata(opts: QueryResultMetadataOptions): Promise<QueryResultMetadata<TermName>>;
-  isSupported(): Promise<boolean>;
 }
 
 interface QueryBoolean extends BaseQuery {
   type: 'boolean';
   execute(): Promise<boolean>;
-  isSupported(): Promise<boolean>;
 }
 
 interface QueryVoid extends BaseQuery {
   type: 'void';
   execute(): Promise<void>;
-  isSupported(): Promise<boolean>;
 }
 
 
