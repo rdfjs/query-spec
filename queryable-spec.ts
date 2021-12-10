@@ -104,7 +104,7 @@ interface QueryResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
   [key: string]: any;
 }
 
-interface QueryResultExecuteOptions<OrderItemsType extends TermName | RDF.Variable> {
+interface QueryExecuteOptions<OrderItemsType extends TermName | RDF.Variable> {
   
   /**
    * TBD
@@ -138,13 +138,13 @@ interface BaseQuery {
 
 interface QueryBindings extends BaseQuery {
   resultType: 'bindings';
-  execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
+  execute(opts?: QueryExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
   metadata: QueryResultMetadata<RDF.Variable> & { variables(): Promise<RDF.Variable[]>; };
 }
     
 interface QueryQuads extends BaseQuery {
   resultType: 'quads';
-  execute(opts?: QueryResultExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
+  execute(opts?: QueryExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
   metadata: QueryResultMetadata<TermName>;
 }
 
