@@ -136,14 +136,10 @@ interface BaseQuery {
   metadata?: QueryResultMetadata<any>;
 }
 
-interface QueryResultBindingsMetadata extends QueryResultMetadata<RDF.Variable> {
-  variables(): Promise<RDF.Variable[]>;
-}
-
 interface QueryBindings extends BaseQuery {
   resultType: 'bindings';
   execute(opts?: QueryResultExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
-  metadata: QueryResultBindingsMetadata;
+  metadata: QueryResultMetadata<RDF.Variable> & { variables(): Promise<RDF.Variable[]>; };
 }
     
 interface QueryQuads extends BaseQuery {
@@ -340,8 +336,6 @@ interface BindingsFactory {
   delete: (bindings: Bindings, key: RDF.Variable) => Bindings;
 }
 
-
-
 type Query = QueryBindings | QueryBoolean | QueryQuads | QueryVoid;
 
 /*
@@ -388,18 +382,11 @@ type Algebra = any;
  * by engines such as Comunica.
  */
 
-interface Queryable<SourceType, ResultType extends Query> {
+interface Queryable<QueryFormatType extends string | Algebra, SourceType, QueryType extends Query> {
   /**
    * May reject given an unsupported query.
    */
-  query(query: string, context?: QueryStringContext<SourceType>): Promise<ResultType>;
-}
-    
-interface AlgebraQueryable<SourceType, ResultType extends Query> {
-  /**
-   * May reject given an unsupported query.
-   */
-  query(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<ResultType>;
+  query(query: QueryFormatType, context?: QueryStringContext<SourceType>): Promise<QueryType>;
 }
 
 /*
@@ -407,16 +394,22 @@ interface AlgebraQueryable<SourceType, ResultType extends Query> {
  * objects are of the expected type as defined by the SPARQL spec.
  */
 
-interface SparqlQueryable<SourceType> {
-  boolean?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryBoolean>;
-  bindings?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryBindings>;
-  quads?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryQuads>;
-  void?(query: string, context?: QueryStringContext<SourceType>): Promise<QueryVoid>;
-}
+type BindingsResult = { bindings: true };
+type VoidResult = { void: true };
+type QuadsResult = { quads: true };
+type BooleanResult = { boolean: true };
 
-interface SparqlAlgebraQueryable<SourceType> {
-  boolean?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryBoolean>;
-  bindings?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryBindings>;
-  quads?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryQuads>;
-  void?(query: Algebra, context?: QueryAlgebraContext<SourceType>): Promise<QueryVoid>;
-}
+type SparqlQueryable<QueryFormatType extends string | Algebra, SourceType, SupportedResultType> = {}
+  & (SupportedResultType extends BindingsResult ? {
+    queryBindings(query: QueryFormatType, context?: QueryStringContext<SourceType>): Promise<Stream<Bindings>>;
+  } : {})
+  & (SupportedResultType extends BooleanResult ? {
+    queryBoolean(query: QueryFormatType, context?: QueryStringContext<SourceType>): Promise<boolean>;
+  } : {})
+  & (SupportedResultType extends QuadsResult ? {
+    queryQuads(query: QueryFormatType, context?: QueryStringContext<SourceType>): Promise<Stream<RDF.Quad>>;
+  } : {}) 
+  & (SupportedResultType extends VoidResult ? {
+    queryVoid(query: QueryFormatType, context?: QueryStringContext<SourceType>): Promise<void>;
+  } : {})
+;
