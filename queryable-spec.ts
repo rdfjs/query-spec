@@ -84,25 +84,25 @@ interface QueryResultCardinality {
  * A QueryResultMetadata is an object that contains metadata about a certain
  * query result.
  */
-interface QueryResultMetadata<OrderItemsType extends TermName | RDF.Variable> {
+type CardinalityMetadataOpts = { cardinality: 'estimate' | 'exact'; };
+type AvailableOrdersMetadataOpts = { availableOrders: true; };
 
-  /**
-   * An optional field that contains metadata about the number of quads in the
-   * result stream.
-   */
-  cardinality(precision?:  'estimate' | 'exact'): Promise<QueryResultCardinality>;
-
+type QueryResultMetadata<MetadataOptsType, OrderItemsType extends TermName | RDF.Variable> = { [key: string]: any }
+  & (MetadataOptsType extends CardinalityMetadataOpts ? {
+    /**
+     * An optional field that contains metadata about the number of quads in the
+     * result stream.
+     */
+    cardinality: QueryResultCardinality,
+  } : {})
+  & (MetadataOptsType extends AvailableOrdersMetadataOpts ? {
   /**
    * An optional field that contains the available options for quad sorting
    * based on the provided pattern, expression and options.
    */
-  availableOrders(): Promise<QueryOperationOrder<OrderItemsType>[]>;
-
-  /**
-   * Custom properties
-   */
-  [key: string]: any;
-}
+   availableOrders: QueryOperationOrder<OrderItemsType>[];
+  } : {})
+;
 
 interface QueryExecuteOptions<OrderItemsType extends TermName | RDF.Variable> {
   
@@ -129,23 +129,18 @@ interface BaseQuery {
    * a boolean or void depending on the semantics of the given query.
    */
   execute(opts?: any): Promise<Stream<any> | boolean | void>;
-
-  /**
-   * Asynchronously metadata of the current result.
-   */
-  metadata?: QueryResultMetadata<any>;
 }
 
 interface QueryBindings extends BaseQuery {
   resultType: 'bindings';
   execute(opts?: QueryExecuteOptions<RDF.Variable>): Promise<Stream<Bindings>>;
-  metadata: QueryResultMetadata<RDF.Variable> & { variables(): Promise<RDF.Variable[]>; };
+  metadata<M>(opts?: M): Promise<QueryResultMetadata<M, RDF.Variable> & { variables(): Promise<RDF.Variable[]>; }>;
 }
     
 interface QueryQuads extends BaseQuery {
   resultType: 'quads';
   execute(opts?: QueryExecuteOptions<TermName>): Promise<Stream<RDF.Quad>>;
-  metadata: QueryResultMetadata<TermName>;
+  metadata<M>(opts?: M): Promise<QueryResultMetadata<M, TermName>>;
 }
 
 interface QueryBoolean extends BaseQuery {
