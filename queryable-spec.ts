@@ -106,7 +106,7 @@ interface QueryExecuteOptions<OrderItemsType extends TermName | RDF.Variable> {
   /**
    * TBD
    */
-  order?: QueryOperationOrder<OrderItemsType>;
+  order?: QueryOperationOrder<OrderItemsType>['terms'];
 
   /**
    * Custom properties
