@@ -207,26 +207,126 @@
     </p>
     <p>
       <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Bindings</code> objects.
-      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>SELECT</code> query.
+      <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL <code>SELECT</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
     <p>
       <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Quad</code> objects.
-      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
+      <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
     <p>
       <dfn>queryBoolean()</dfn> is an optional method that asynchronously returns a <code>boolean</code>.
-      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>ASK</code> query.
+      <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL <code>ASK</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
     <p>
       <dfn>queryVoid()</dfn> is an optional method that asynchronously returns a <code>void</code>.
-      <dfn>query</dfn> is a query string that SHOULD be a SPARQL update query.
+      <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL update query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
   </section>
 
+</section>
+
+<section>
+  <h2>Query context interfaces</h2>
+  
+  This section introduces interfaces related to query contexts,
+  which are an optional argument to queryable interfaces for passing additional in information to query engines.
+  
+  <section data-dfn-for="QueryContext">
+    <h3><dfn>QueryContext</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryContext {
+      attribute Date? queryTimestamp;
+    };
+    </pre>
+    
+    <p>
+      <code>QueryContext</code> is a base context interface.
+    </p>
+    
+    <p>
+      <dfn>queryTimestamp</dfn> The date that should be used by SPARQL operations such as <code>NOW()</code>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryStringContext">
+    <h3><dfn>QueryStringContext</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryStringContext : QueryContext {
+      attribute QueryFormat? queryFormat;
+      attribute string? baseIRI;
+    };
+    </pre>
+    
+    <p>
+      A <code>QueryStringContext</code> is a context that can be passed together with a query string.
+    </p>
+    
+    <p>
+      <dfn>queryFormat</dfn> The format in which the query string is defined.
+    </p>
+    <p>
+      <dfn>baseIRI</dfn> The base IRI for parsing the query.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryAlgebraContext">
+    <h3><dfn>QueryAlgebraContext</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryAlgebraContext : QueryContext {};
+    </pre>
+    
+    <p>
+      A <code>QueryAlgebraContext</code> is a context that can be passed together with a query <code>Algebra</code> object.
+    </p>
+    
+  </section>
+  
+  <section data-dfn-for="QuerySourceContext">
+    <h3><dfn>QuerySourceContext</dfn> interface</h3>
+    <pre class="idl">
+    interface QuerySourceContext : QueryContext {
+      attribute Array? sources;
+    };
+    </pre>
+    
+    <p>
+      A <code>QuerySourceContext</code> can be used by query engines that accept custom data sources during query execution.
+    </p>
+    
+    <p>
+      <dfn>sources</dfn> An array of data sources the query engine must use.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryFormat">
+    <h3><dfn>QueryFormat</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryFormat {
+      attribute string language;
+      attribute string version;
+      attribute Array&lt;string&gt;? extensions;
+    };
+    </pre>
+    
+    <p>
+      A <code>QueryFormat</code> represents the format of a string query, and may influence parsing or execution behaviour.
+    </p>
+    
+    <p>
+      <dfn>language</dfn> The query language, e.g. <code>"sparql"</code>.
+    </p>
+    <p>
+      <dfn>version</dfn> The version of the query language, e.g. <code>"1.1"</code>.
+    </p>
+    <p>
+      <dfn>language</dfn> An optional array of extensions on the query language. The representation of these extensions is undefined.
+    </p>
+  </section>
+  
 </section>
 
 <section>
