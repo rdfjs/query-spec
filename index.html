@@ -101,6 +101,165 @@
 </section>
 
 <section>
+  <h2>Bindings interfaces</h2>
+  
+  This section introduces interfaces related to query result bindings.
+  In SPARQL SELECT queries, these bindings correspond to <a href="https://www.w3.org/TR/sparql11-query/#sparqlSolutions">solution mappings</a>.
+
+  <section>
+    <h2>Goals</h2>
+    <ul>
+      <li>Query engines should be able to interact with bindings created by different libraries.</li>
+      <li>Bindings are immutable</li>
+      <li>Interfaces do no specify how bindings are stored in memory</li>
+    </ul>
+  </section>
+  
+  <section data-dfn-for="Bindings">
+    <h3><dfn>Bindings</dfn> interface</h3>
+
+    <pre class="idl">
+    interface Bindings {
+      iterable&lt;(Variable, Term)&gt;;
+
+      readonly attribute string type;
+      readonly attribute unsigned long size;
+
+      boolean has((Variable or string) key);
+      Term? get((Variable or string) key);
+      Bindings set((Variable or string) key, Term value);
+      Bindings delete((Variable or string) key);
+      iterable&lt;Variable&gt; keys();
+      iterable&lt;Term&gt; values();
+      boolean equals(optional Bindings? other);
+      void forEach(BindingsEntryCallback callback);
+      Bindings filter(BindingsFilterCallback callback);
+      Bindings map(BindingsMapCallback callback);
+      Bindings merge(Bindings other);
+      Bindings mergeWith(BindingsMergeCallback callback, Bindings other);
+    };
+    
+    callback BindingsEntryCallback = undefined (Term value, Variable key);
+    callback BindingsFilterCallback = boolean (Term value, Variable key);
+    callback BindingsMapCallback = Term (Term value, Variable key);
+    callback BindingsMergeCallback = Term (Term self, Term other, Variable key);
+    </pre>
+
+    <p>
+      A <code>Bindings</code> is an object that represents the mapping of variables to RDF values using an immutable Map-like representation.
+      This means that methods such as <code>set</code> and <code>delete</code> do not modify this instance,
+      but they return a new Bindings instance that contains the modification.
+    </p>
+    <p>
+      Every <code>Bindings</code> object is an iterable over its entries, where each entry is a tuple of <code>Variable</code> key and <code>Term</code> value.
+    </p>
+    
+    <h3>Attributes</h3>
+    
+    <p>
+      <dfn>type</dfn> contains the constant <code>"bindings"</code>.
+    </p>
+    <p>
+      <dfn>size</dfn> is a field that contains the number of entries in this <code>Bindings</code> object.
+    </p>
+    
+    <h3>Methods</h3>
+    
+    <p>
+      <dfn>has</dfn> checks if a binding exist for the given variable.
+      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+    </p>
+    <p>
+      <dfn>get</dfn> returns the <code>Term</code> value bound to the given variable, or <code>undefined</code> if no binding exists.
+      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+    </p>
+    <p>
+      <dfn>set</dfn> returns a new <code>Bindings</code> object by adding the given variable and value mapping.
+      If the variable already exists in the binding, then the existing mapping is overwritten.
+      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+      <dfn>value</dfn> is the <code>Term</code> value that must be bound.
+    </p>
+    <p>
+      <dfn>delete</dfn> returns a new <code>Bindings</code> object by removing the given variable.
+      If the variable does not exist in the binding, a copy of the <code>Bindings</code> object is returned.
+      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+    </p>
+    <p>
+      <dfn>keys</dfn> returns an iterable of <code>Variable</code> instances for which mappings exist.
+    </p>
+    <p>
+      <dfn>values</dfn> returns an iterable of <code>Term</code> values for which mappings exist.
+    </p>
+    <p>
+      <dfn>equals</dfn> returns <code>true</code>
+      when called with parameter <code>other</code>
+      on an object <code>Bindings</code> if
+      all of the conditions below hold:
+    </p>
+    <ul>
+      <li><code>other</code> is <em>neither</em> <code>null</code> nor <code>undefined</code>;</li>
+      <li>The keys in the this and the other <code>Bindings</code> object are equal (following the semantics of <code>Variable.equals</code>);</li>
+      <li>For each key, the values within each <code>Bindings</code> object are equal (following the semantics of <code>Term.equals</code>);</li>
+    </ul>
+    <p>
+      <dfn>forEach</dfn> invokes the <code>callback</code> for all entries in this <code>Bindings</code> object,
+      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
+    </p>
+    <p>
+      <dfn>filter</dfn> returns a new <code>Bindings</code> object by filtering entries using <code>callback</code>,
+      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
+      Returning <code>true</code> indicates that this entry must be contained in the resulting <code>Bindings</code> object.
+    </p>
+    <p>
+      <dfn>map</dfn> returns a new <code>Bindings</code> object by mapping entries using <code>callback</code>,
+      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
+      The original <code>Term</code> value is replaced by the returned <code>Term</code> value in the resulting <code>Bindings</code> object.
+    </p>
+    <p>
+      <dfn>merge</dfn> merges this <code>Bindings</code> object with another <code>Bindings</code> object.
+      If a merge conflict occurs (this and other have an equal variable with unequal value), then <code>undefined</code> is returned.
+    </p>
+    <p>
+      <dfn>mergeWith</dfn> merges this <code>Bindings</code> object with another <code>Bindings</code> object,
+      where merge conflicts can be resolved using <code>callback</code>.
+      <code>callback</code> is invoked with the value <code>Term</code> of the first <code>Bindings</code> object as first argument,
+      the value <code>Term</code> of the second <code>Bindings</code> object as second argument,
+      and the key <code>Variable</code> as third argument,
+      where the returned <code>Term</code> is considered the merged value.
+    </p>
+  </section>
+
+  <section data-dfn-for="BindingsFactory">
+    <h3><dfn>BindingsFactory</dfn> interface</h3>
+
+    <pre class="idl">
+    interface BindingsFactory {
+      Bindings bindings(Array&lt;(Variable, Term)&gt;? entries);
+      Bindings fromBindings(Bindings bindings);
+    };
+    </pre>
+
+    <p>
+      <dfn>bindings()</dfn> returns a new <code>Bindings</code> using the given entries,
+      where the entries are represented as an array of key-value pairs.
+    </p>    
+    <p>
+      <dfn>fromBindings()</dfn> returns a copy of the given <code>Bindings</code> using this factory.
+    </p>
+  </section>
+
+</section>
+
+  <div class="warning" title="Experimental!">
+    <p>
+      The following interfaces are experimental and will change in future versions of this document:
+    </p>
+    <p>
+      <code>FilterableSource</code>, <code>FilterResult</code>, <code>QueryResultMetadata</code>, <code>QueryResultMetadataCount</code>, <code>QueryResultMetadataOptions</code>, <code>Expression</code>, <code>OperatorExpression</code>, <code>TermExpression</code>, <code>ExpressionFactory</code>
+    </p>
+  </div>
+
+<section>
   <h2>Filter expression interfaces</h2>
   
   This section introduces interfaces that enable quad sources to be filtered based on a declarative expression.
