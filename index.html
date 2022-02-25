@@ -101,51 +101,6 @@
 </section>
 
 <section>
-  <h2>Queryable interfaces</h2>
-  
-  This section introduces interfaces that can be implemented by query engines to make them expose a query execution interface.
-
-  <section data-dfn-for="StringQueryable">
-    <h3><dfn>StringQueryable</dfn> interface</h3>
-
-    <pre class="idl">
-    interface StringQueryable {
-      Promise&lt;Query&gt; query(String query, QueryStringContext? context);
-    };
-    </pre>
-
-    <p>
-      A <code>StringQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as a string.
-    </p>
-    <p>
-      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
-      <dfn>query</dfn> is a query string.
-      <dfn>context</dfn> is an optional context in which query execution options can be passed.
-    </p>
-  </section>
-  
-  <section data-dfn-for="AlgebraQueryable">
-    <h3><dfn>AlgebraQueryable</dfn> interface</h3>
-
-    <pre class="idl">
-    interface AlgebraQueryable {
-      Promise&lt;Query&gt; query(Algebra query, QueryAlgebraContext? context);
-    };
-    </pre>
-
-    <p>
-      An <code>AlgebraQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
-    </p>
-    <p>
-      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
-      <dfn>query</dfn> is a query <code>Algebra</code> object.
-      <dfn>context</dfn> is an optional context in which query execution options can be passed.
-    </p>
-  </section>
-
-</section>
-
-<section>
   <h2>SPARQL Queryable interfaces</h2>
   
   This section introduces queryable interfaces that can be implemented by SPARQL-constrained query engines.
@@ -227,6 +182,215 @@
     </p>
   </section>
 
+</section>
+
+<section>
+  <h2>Queryable interfaces</h2>
+  
+  This section introduces interfaces that can be implemented by query engines to make them expose a query execution interface.
+
+  <section data-dfn-for="StringQueryable">
+    <h3><dfn>StringQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface StringQueryable {
+      Promise&lt;Query&gt; query(String query, QueryStringContext? context);
+    };
+    </pre>
+
+    <p>
+      A <code>StringQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as a string.
+    </p>
+    <p>
+      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query</dfn> is a query string.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+  
+  <section data-dfn-for="AlgebraQueryable">
+    <h3><dfn>AlgebraQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface AlgebraQueryable {
+      Promise&lt;Query&gt; query(Algebra query, QueryAlgebraContext? context);
+    };
+    </pre>
+
+    <p>
+      An <code>AlgebraQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
+    </p>
+    <p>
+      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query</dfn> is a query <code>Algebra</code> object.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+
+</section>
+
+<section>
+  <h2>Query interfaces</h2>
+  
+  This section introduces query interfaces that act as intermediary objects that represent queries that can be executed.
+  
+  <section data-dfn-for="Query">
+    <h3><dfn>Query</dfn> interface</h3>
+    <pre class="idl">
+    interface Query {
+      readonly attribute string resultType;
+      Promise&lt;any&gt; execute(any options);
+    };
+    </pre>
+
+    <p>
+      <code>Query</code> is an abstract interface that represents a query that can be executed.
+    </p>
+
+    <p>
+      <dfn>resultType</dfn> represents the type of query that is being executed.
+      Possible values include <code>"bindings"</code>, <code>"quads"</code>, <code>"boolean"</code>, and <code>"void"</code>.
+    </p>
+    <p>
+      <dfn>execute()</dfn> asynchronously returns the query result, where the signature depends on the <code>resultType</code>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryBindings">
+    <h3><dfn>QueryBindings</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryBindings {
+      readonly attribute string resultType;
+      Promise&lt;Stream&lt;Bindings&gt;&gt; execute(QueryExecuteOptions&lt;Variable&gt;? options);
+      Promise&lt;QueryMetadata&lt;Bindings&gt;&gt; metadata(QueryMetadataOptions? options);
+    };
+    </pre>
+
+    <p>
+      <code>QueryBindings</code> represents a query that returns a stream of <code>Bindings</code>, such as a SPARQL <code>SELECT</code> query.
+    </p>
+
+    <p>
+      <dfn>resultType</dfn> contains the constant <code>"bindings"</code>.
+    </p>
+    <p>
+      <dfn>execute()</dfn> asynchronously returns the a stream of <code>Bindings</code>.
+      <dfn>options</dfn> is an optional argument in which execution options can be passed.
+    </p>
+    <p>
+      <dfn>metadata()</dfn> asynchronously returns the a <code>QueryMetadata</code> object.
+      <dfn>options</dfn> is an optional argument in which desired metadata options can be passed.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryQuads">
+    <h3><dfn>QueryQuads</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryQuads {
+      readonly attribute string resultType;
+      Promise&lt;Stream&lt;Quad&gt;&gt; execute(QueryExecuteOptions&lt;("subject" or "predicate" or "object" or "graph")&gt;? options);
+      Promise&lt;QueryMetadata&lt;Quad&gt;&gt; metadata(QueryMetadataOptions? options);
+    };
+    </pre>
+
+    <p>
+      <code>QueryQuads</code> represents a query that returns a stream of <code>Quad</code>s, such as a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
+    </p>
+
+    <p>
+      <dfn>resultType</dfn> contains the constant <code>"quads"</code>.
+    </p>
+    <p>
+      <dfn>execute()</dfn> asynchronously returns the a stream of <code>Quad</code>s.
+      <dfn>options</dfn> is an optional argument in which execution options can be passed.
+    </p>
+    <p>
+      <dfn>metadata()</dfn> asynchronously returns the a <code>QueryMetadata</code> object.
+      <dfn>options</dfn> is an optional argument in which desired metadata options can be passed.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryBoolean">
+    <h3><dfn>QueryBoolean</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryBoolean {
+      readonly attribute string resultType;
+      Promise&lt;boolean&gt; execute();
+    };
+    </pre>
+
+    <p>
+      <code>QueryBoolean</code> represents a query that returns a <code>boolean</code>, such as a SPARQL <code>ASK</code> query.
+    </p>
+
+    <p>
+      <dfn>resultType</dfn> contains the constant <code>"boolean"</code>.
+    </p>
+    <p>
+      <dfn>execute()</dfn> asynchronously returns a <code>boolean</code>.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryVoid">
+    <h3><dfn>QueryVoid</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryVoid {
+      readonly attribute string resultType;
+      Promise&lt;void&gt; execute();
+    };
+    </pre>
+
+    <p>
+      <code>QueryVoid</code> represents a query that returns nothing, such as a SPARQL update query.
+    </p>
+
+    <p>
+      <dfn>resultType</dfn> contains the constant <code>"void"</code>.
+    </p>
+    <p>
+      <dfn>execute()</dfn> asynchronously returns nothing.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryExecuteOptions">
+    <h3><dfn>QueryExecuteOptions</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryExecuteOptions&lt;OrderType&gt; {
+      readonly attribute Array&lt;QueryOperationOrderTerm&lt;OrderType&gt;&gt; order;
+    };
+    </pre>
+
+    <p>
+      <code>QueryExecuteOptions</code> represents the options for executing a query.
+    </p>
+
+    <p>
+      <dfn>order</dfn> contains the desired order of query results.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryOperationOrderTerm">
+    <h3><dfn>QueryOperationOrderTerm</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryOperationOrderTerm&lt;OrderType&gt; {
+      attribute OrderType term;
+      attribute ("asc" or "desc") direction;
+    };
+    </pre>
+
+    <p>
+      <code>QueryOperationOrderTerm</code> represents the ordering of a term of a given generic type.
+    </p>
+
+    <p>
+      <dfn>term</dfn> contains the term over which the order is applied.
+    </p>
+    <p>
+      <dfn>direction</dfn> contains the value <code>"asc"</code> or <code>"desc"</code>,
+      which respectively refer to an ascending or descending order.
+    </p>
+  </section>
+  
 </section>
 
 <section>
