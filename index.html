@@ -369,6 +369,85 @@
     </p>
   </section>
   
+  <section data-dfn-for="QueryMetadataOptions">
+    <h3><dfn>QueryMetadataOptions</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryMetadataOptions {
+      attribute ("estimate" or "exact")? cardinality;
+      attribute boolean order;
+      attribute boolean availableOrders;
+    };
+    </pre>
+
+    <p>
+      <code>QueryMetadataOptions</code> represents the options for requesting the metadata of a query.
+    </p>
+
+    <p>
+      <dfn>cardinality</dfn> indicates if an exact or estimated value for the <code>cardinality</code> metadata field should be returned.
+    </p>
+    <p>
+      <dfn>order</dfn> indicates if the <code>order</code> metadata field should be returned.
+    </p>
+    <p>
+      <dfn>availableOrders</dfn> indicates if the <code>availableOrders</code> metadata field should be returned.
+    </p>
+  </section>
+  
+</section>
+
+<section>
+  <h2>Metadata interfaces</h2>
+  
+  This section introduces metadata interfaces that can contain additional information about the query execution process.
+  
+  <section data-dfn-for="QueryMetadata">
+    <h3><dfn>QueryMetadata</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryMetadata&lt;OrderType&gt; {
+      readonly attribute QueryResultCardinality? cardinality;
+      readonly attribute Array&lt;QueryOperationOrderTerm&lt;OrderType&gt;&gt;? order;
+      readonly attribute Array&lt;QueryResultOrderCost&lt;OrderType&gt;&gt;? availableOrders;
+    };
+    </pre>
+
+    <p>
+      <code>QueryMetadata</code> is an interface that contains side information about the query execution process.
+    </p>
+
+    <p>
+      <dfn>cardinality</dfn> represents the number of results of a query.
+    </p>
+    <p>
+      <dfn>order</dfn> represents the order of results in the query result.
+    </p>
+    <p>
+      <dfn>availableOrders</dfn> is an array of alternative orders that may be requested when executing a query.
+    </p>
+  </section>
+  
+  <section data-dfn-for="QueryResultCardinality">
+    <h3><dfn>QueryResultCardinality</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryResultCardinality {
+      attribute ("estimate" or "exact") type;
+      attribute unsigned long value;
+    };
+    </pre>
+
+    <p>
+      <code>QueryResultCardinality</code> represents the number of results of a query, which can either be an estimated value or exact.
+    </p>
+
+    <p>
+      <dfn>type</dfn> contains the value <code>"estimate"</code> or <code>"exact"</code>,
+      which respectively refer to an exact or estimate value.
+    </p>
+    <p>
+      <dfn>value</dfn> contains the cardinality value.
+    </p>
+  </section>
+
   <section data-dfn-for="QueryOperationOrderTerm">
     <h3><dfn>QueryOperationOrderTerm</dfn> interface</h3>
     <pre class="idl">
@@ -390,7 +469,56 @@
       which respectively refer to an ascending or descending order.
     </p>
   </section>
-  
+
+  <section data-dfn-for="QueryResultOrderCost">
+    <h3><dfn>QueryResultOrderCost</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryResultOrderCost&lt;OrderType&gt; {
+      attribute QueryOperationCost cost;
+      attribute Array&lt;QueryOperationOrderTerm&lt;OrderType&gt;&gt; terms;
+    };
+    </pre>
+
+    <p>
+      <code>QueryResultOrderCost</code> represents the cost of a specific ordering of query results.
+    </p>
+
+    <p>
+      <dfn>cost</dfn> represents the cost of executing this ordering.
+    </p>
+    <p>
+      <dfn>terms</dfn> represents the order of terms in an ordering.
+    </p>
+  </section>
+
+  <section data-dfn-for="QueryOperationCost">
+    <h3><dfn>QueryOperationCost</dfn> interface</h3>
+    <pre class="idl">
+    interface QueryOperationCost {
+      attribute unsigned long iterations;
+      attribute unsigned long persistedItems;
+      attribute unsigned long blockingItems;
+      attribute unsigned long requestTime;
+    };
+    </pre>
+
+    <p>
+      <code>QueryOperationCost</code> represents the cost of a certain query operation.
+    </p>
+
+    <p>
+      <dfn>iterations</dfn> is estimation of how many iterations over items are executed. This can be used to determine the CPU cost.
+    </p>
+    <p>
+      <dfn>persistedItems</dfn> is estimation of how many items are stored in memory. This is used to determine the memory cost.
+    </p>
+    <p>
+      <dfn>blockingItems</dfn> is estimation of how many items block the stream. This is used to determine the time the stream is not progressing anymore.
+    </p>
+    <p>
+      <dfn>requestTime</dfn> is estimation of the time to request items from sources. This is used to determine the I/O cost.
+    </p>
+  </section>
 </section>
 
 <section>
