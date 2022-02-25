@@ -101,6 +101,135 @@
 </section>
 
 <section>
+  <h2>Queryable interfaces</h2>
+  
+  This section introduces interfaces that can be implemented by query engines to make them expose a query execution interface.
+
+  <section data-dfn-for="StringQueryable">
+    <h3><dfn>StringQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface StringQueryable {
+      Promise&lt;Query&gt; query(String query, QueryStringContext? context);
+    };
+    </pre>
+
+    <p>
+      A <code>StringQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as a string.
+    </p>
+    <p>
+      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query</dfn> is a query string.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+  
+  <section data-dfn-for="AlgebraQueryable">
+    <h3><dfn>AlgebraQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface AlgebraQueryable {
+      Promise&lt;Query&gt; query(Algebra query, QueryAlgebraContext? context);
+    };
+    </pre>
+
+    <p>
+      An <code>AlgebraQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
+    </p>
+    <p>
+      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query</dfn> is a query <code>Algebra</code> object.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+
+</section>
+
+<section>
+  <h2>SPARQL Queryable interfaces</h2>
+  
+  This section introduces queryable interfaces that can be implemented by SPARQL-constrained query engines.
+  These interfaces guarantees that result objects are of the expected type as defined by the SPARQL spec,
+  and is often more convenient to use compared to the general queryable interfaces.
+
+  <section data-dfn-for="StringSparqlQueryable">
+    <h3><dfn>StringSparqlQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface StringSparqlQueryable {
+      optional Promise&lt;Stream&lt;Bindings&gt;&gt; queryBindings(String query, QueryStringContext? context);
+      optional Promise&lt;Stream&lt;Quad&gt;&gt; queryQuads(String query, QueryStringContext? context);
+      optional Promise&lt;boolean&gt; queryBoolean(String query, QueryStringContext? context);
+      optional Promise&lt;void&gt; queryVoid(String query, QueryStringContext? context);
+    };
+    </pre>
+
+    <p>
+      A <code>StringSparqlQueryable</code> can be implemented by objects that want to expose a SPARQL-constrained query execution interface
+      that accepts queries as a string.
+    </p>
+    <p>
+      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Bindings</code> objects.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>SELECT</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Quad</code> objects.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryBoolean()</dfn> is an optional method that asynchronously returns a <code>boolean</code>.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>ASK</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryVoid()</dfn> is an optional method that asynchronously returns a <code>void</code>.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL update query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+  
+  <section data-dfn-for="AlgebraSparqlQueryable">
+    <h3><dfn>AlgebraSparqlQueryable</dfn> interface</h3>
+
+    <pre class="idl">
+    interface AlgebraSparqlQueryable {
+      optional Promise&lt;Stream&lt;Bindings&gt;&gt; queryBindings(Algebra query, QueryStringContext? context);
+      optional Promise&lt;Stream&lt;Quad&gt;&gt; queryQuads(Algebra query, QueryStringContext? context);
+      optional Promise&lt;boolean&gt; queryBoolean(Algebra query, QueryStringContext? context);
+      optional Promise&lt;void&gt; queryVoid(Algebra query, QueryStringContext? context);
+    };
+    </pre>
+
+    <p>
+      An <code>AlgebraSparqlQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
+    </p>
+    <p>
+      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Bindings</code> objects.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>SELECT</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Quad</code> objects.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryBoolean()</dfn> is an optional method that asynchronously returns a <code>boolean</code>.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>ASK</code> query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+    <p>
+      <dfn>queryVoid()</dfn> is an optional method that asynchronously returns a <code>void</code>.
+      <dfn>query</dfn> is a query string that SHOULD be a SPARQL update query.
+      <dfn>context</dfn> is an optional context in which query execution options can be passed.
+    </p>
+  </section>
+
+</section>
+
+<section>
   <h2>Bindings interfaces</h2>
   
   This section introduces interfaces related to query result bindings.
