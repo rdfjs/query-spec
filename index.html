@@ -121,12 +121,12 @@
       that accepts queries as a string.
     </p>
     <p>
-      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Bindings</code> objects.
+      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <a href="https://rdf.js.org/stream-spec/#stream-interface">Stream</a> of <a>Bindings</a> objects.
       <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>SELECT</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
     <p>
-      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Quad</code> objects.
+      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <a href="https://rdf.js.org/stream-spec/#stream-interface">Stream</a> of <a href="http://rdf.js.org/data-model-spec/#quad-interface">Quad</a> objects.
       <dfn>query</dfn> is a query string that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
@@ -158,12 +158,12 @@
       An <code>AlgebraSparqlQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
     </p>
     <p>
-      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Bindings</code> objects.
+      <dfn>queryBindings()</dfn> is an optional method that asynchronously returns a <a href="https://rdf.js.org/stream-spec/#stream-interface">Stream</a> of <a>Bindings</a> objects.
       <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL <code>SELECT</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
     <p>
-      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <code>Stream</code> of <code>Quad</code> objects.
+      <dfn>queryQuads()</dfn> is an optional method that asynchronously returns a <a href="https://rdf.js.org/stream-spec/#stream-interface">Stream</a> of <a href="http://rdf.js.org/data-model-spec/#quad-interface">Quad</a> objects.
       <dfn>query</dfn> is a query <code>Algebra</code> object that SHOULD be a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
@@ -199,7 +199,7 @@
       A <code>StringQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as a string.
     </p>
     <p>
-      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query()</dfn> asynchronously returns a new <a>Query</a> object that can be executed later.
       <dfn>query</dfn> is a query string.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
@@ -218,7 +218,7 @@
       An <code>AlgebraQueryable</code> can be implemented by objects that want to expose a query execution interface that accepts queries as an <code>Algebra</code> object.
     </p>
     <p>
-      <dfn>query()</dfn> asynchronously returns a new <code>Query</code> object that can be executed later.
+      <dfn>query()</dfn> asynchronously returns a new <a>Query</a> object that can be executed later.
       <dfn>query</dfn> is a query <code>Algebra</code> object.
       <dfn>context</dfn> is an optional context in which query execution options can be passed.
     </p>
@@ -264,18 +264,18 @@
     </pre>
 
     <p>
-      <code>QueryBindings</code> represents a query that returns a stream of <code>Bindings</code>, such as a SPARQL <code>SELECT</code> query.
+      <code>QueryBindings</code> represents a query that returns a stream of <a>Bindings</a>, such as a SPARQL <code>SELECT</code> query.
     </p>
 
     <p>
       <dfn>resultType</dfn> contains the constant <code>"bindings"</code>.
     </p>
     <p>
-      <dfn>execute()</dfn> asynchronously returns a stream of <code>Bindings</code>.
+      <dfn>execute()</dfn> asynchronously returns a stream of <a>Bindings</a>.
       <dfn>options</dfn> is an optional argument in which execution options can be passed.
     </p>
     <p>
-      <dfn>metadata()</dfn> asynchronously returns a <code>QueryMetadata</code> object.
+      <dfn>metadata()</dfn> asynchronously returns a <a>QueryMetadata</a> object.
       <dfn>options</dfn> is an optional argument in which desired metadata options can be passed.
     </p>
   </section>
@@ -291,18 +291,18 @@
     </pre>
 
     <p>
-      <code>QueryQuads</code> represents a query that returns a stream of <code>Quad</code>s, such as a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
+      <code>QueryQuads</code> represents a query that returns a stream of <a href="http://rdf.js.org/data-model-spec/#quad-interface">Quad</a>s, such as a SPARQL <code>CONSTRUCT</code> or <code>DESCRIBE</code> query.
     </p>
 
     <p>
       <dfn>resultType</dfn> contains the constant <code>"quads"</code>.
     </p>
     <p>
-      <dfn>execute()</dfn> asynchronously returns a stream of <code>Quad</code>s.
+      <dfn>execute()</dfn> asynchronously returns a stream of <a href="http://rdf.js.org/data-model-spec/#quad-interface">Quad</a>s.
       <dfn>options</dfn> is an optional argument in which execution options can be passed.
     </p>
     <p>
-      <dfn>metadata()</dfn> asynchronously returns a <code>QueryMetadata</code> object.
+      <dfn>metadata()</dfn> asynchronously returns a <a>QueryMetadata</a> object.
       <dfn>options</dfn> is an optional argument in which desired metadata options can be passed.
     </p>
   </section>
@@ -664,12 +664,12 @@
     </pre>
 
     <p>
-      A <code>Bindings</code> is an object that represents the mapping of variables to RDF values using an immutable Map-like representation.
+      A <a>Bindings</a> is an object that represents the mapping of variables to RDF values using an immutable Map-like representation.
       This means that methods such as <code>set</code> and <code>delete</code> do not modify this instance,
       but they return a new Bindings instance that contains the modification.
     </p>
     <p>
-      Every <code>Bindings</code> object is an iterable over its entries, where each entry is a tuple of <code>Variable</code> key and <code>Term</code> value.
+      Every <a>Bindings</a> object is an iterable over its entries, where each entry is a tuple of <code>Variable</code> key and <code>Term</code> value.
     </p>
     
     <h3>Attributes</h3>
@@ -678,72 +678,72 @@
       <dfn>type</dfn> contains the constant <code>"bindings"</code>.
     </p>
     <p>
-      <dfn>size</dfn> is a field that contains the number of entries in this <code>Bindings</code> object.
+      <dfn>size</dfn> is a field that contains the number of entries in this <a>Bindings</a> object.
     </p>
     
     <h3>Methods</h3>
     
     <p>
       <dfn>has</dfn> checks if a binding exist for the given variable.
-      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+      <dfn>key</dfn> can be a <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> or string. If it is a string, no `?` prefix must be given.
     </p>
     <p>
-      <dfn>get</dfn> returns the <code>Term</code> value bound to the given variable, or <code>undefined</code> if no binding exists.
-      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+      <dfn>get</dfn> returns the <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> value bound to the given variable, or <code>undefined</code> if no binding exists.
+      <dfn>key</dfn> can be a <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> or string. If it is a string, no `?` prefix must be given.
     </p>
     <p>
-      <dfn>set</dfn> returns a new <code>Bindings</code> object by adding the given variable and value mapping.
+      <dfn>set</dfn> returns a new <a>Bindings</a> object by adding the given variable and value mapping.
       If the variable already exists in the binding, then the existing mapping is overwritten.
-      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
-      <dfn>value</dfn> is the <code>Term</code> value that must be bound.
+      <dfn>key</dfn> can be a <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> or string. If it is a string, no `?` prefix must be given.
+      <dfn>value</dfn> is the <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> value that must be bound.
     </p>
     <p>
-      <dfn>delete</dfn> returns a new <code>Bindings</code> object by removing the given variable.
-      If the variable does not exist in the binding, a copy of the <code>Bindings</code> object is returned.
-      <dfn>key</dfn> can be a <code>Variable</code> or string. If it is a string, no `?` prefix must be given.
+      <dfn>delete</dfn> returns a new <a>Bindings</a> object by removing the given variable.
+      If the variable does not exist in the binding, a copy of the <a>Bindings</a> object is returned.
+      <dfn>key</dfn> can be a <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> or string. If it is a string, no `?` prefix must be given.
     </p>
     <p>
-      <dfn>keys</dfn> returns an iterable of <code>Variable</code> instances for which mappings exist.
+      <dfn>keys</dfn> returns an iterable of <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> instances for which mappings exist.
     </p>
     <p>
-      <dfn>values</dfn> returns an iterable of <code>Term</code> values for which mappings exist.
+      <dfn>values</dfn> returns an iterable of <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> values for which mappings exist.
     </p>
     <p>
       <dfn>equals</dfn> returns <code>true</code>
       when called with parameter <code>other</code>
-      on an object <code>Bindings</code> if
+      on an object <a>Bindings</a> if
       all of the conditions below hold:
     </p>
     <ul>
       <li><code>other</code> is <em>neither</em> <code>null</code> nor <code>undefined</code>;</li>
-      <li>The keys in the this and the other <code>Bindings</code> object are equal (following the semantics of <code>Variable.equals</code>);</li>
-      <li>For each key, the values within each <code>Bindings</code> object are equal (following the semantics of <code>Term.equals</code>);</li>
+      <li>The keys in the this and the other <a>Bindings</a> object are equal (following the semantics of <code>Variable.equals</code>);</li>
+      <li>For each key, the values within each <a>Bindings</a> object are equal (following the semantics of <code>Term.equals</code>);</li>
     </ul>
     <p>
-      <dfn>forEach</dfn> invokes the <code>callback</code> for all entries in this <code>Bindings</code> object,
-      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
+      <dfn>forEach</dfn> invokes the <code>callback</code> for all entries in this <a>Bindings</a> object,
+      with the entry value <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> as first argument, and the entry key <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> as second argument.
     </p>
     <p>
-      <dfn>filter</dfn> returns a new <code>Bindings</code> object by filtering entries using <code>callback</code>,
-      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
-      Returning <code>true</code> indicates that this entry must be contained in the resulting <code>Bindings</code> object.
+      <dfn>filter</dfn> returns a new <a>Bindings</a> object by filtering entries using <code>callback</code>,
+      with the entry value <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> as first argument, and the entry key <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> as second argument.
+      Returning <code>true</code> indicates that this entry must be contained in the resulting <a>Bindings</a> object.
     </p>
     <p>
-      <dfn>map</dfn> returns a new <code>Bindings</code> object by mapping entries using <code>callback</code>,
-      with the entry value <code>Term</code> as first argument, and the entry key <code>Variable</code> as second argument.
-      The original <code>Term</code> value is replaced by the returned <code>Term</code> value in the resulting <code>Bindings</code> object.
+      <dfn>map</dfn> returns a new <a>Bindings</a> object by mapping entries using <code>callback</code>,
+      with the entry value <code>Term</code> as first argument, and the entry key <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> as second argument.
+      The original <code>Term</code> value is replaced by the returned <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> value in the resulting <a>Bindings</a> object.
     </p>
     <p>
-      <dfn>merge</dfn> merges this <code>Bindings</code> object with another <code>Bindings</code> object.
+      <dfn>merge</dfn> merges this <a>Bindings</a> object with another <a>Bindings</a> object.
       If a merge conflict occurs (this and other have an equal variable with unequal value), then <code>undefined</code> is returned.
     </p>
     <p>
-      <dfn>mergeWith</dfn> merges this <code>Bindings</code> object with another <code>Bindings</code> object,
+      <dfn>mergeWith</dfn> merges this <a>Bindings</a> object with another <a>Bindings</a> object,
       where merge conflicts can be resolved using <code>callback</code>.
-      <code>callback</code> is invoked with the value <code>Term</code> of the first <code>Bindings</code> object as first argument,
-      the value <code>Term</code> of the second <code>Bindings</code> object as second argument,
-      and the key <code>Variable</code> as third argument,
-      where the returned <code>Term</code> is considered the merged value.
+      <code>callback</code> is invoked with the value <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> of the first <a>Bindings</a> object as first argument,
+      the value <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> of the second <a>Bindings</a> object as second argument,
+      and the key <a href="http://rdf.js.org/data-model-spec/#variable-interface">Variable</a> as third argument,
+      where the returned <a href="http://rdf.js.org/data-model-spec/#term-interface">Term</a> is considered the merged value.
     </p>
   </section>
 
@@ -758,11 +758,11 @@
     </pre>
 
     <p>
-      <dfn>bindings()</dfn> returns a new <code>Bindings</code> using the given entries,
+      <dfn>bindings()</dfn> returns a new <a>Bindings</a> using the given entries,
       where the entries are represented as an array of key-value pairs.
     </p>    
     <p>
-      <dfn>fromBindings()</dfn> returns a copy of the given <code>Bindings</code> using this factory.
+      <dfn>fromBindings()</dfn> returns a copy of the given <a>Bindings</a> using this factory.
     </p>
   </section>
 
